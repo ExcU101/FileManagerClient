@@ -25,5 +25,5 @@ pluginManagement {
         }
     }
 }
-rootProject.name = "File Manage Client"
+rootProject.name = "File Manager Client"
 include(":app")
