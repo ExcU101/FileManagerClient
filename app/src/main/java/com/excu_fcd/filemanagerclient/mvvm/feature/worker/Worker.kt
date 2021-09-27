@@ -8,7 +8,7 @@ abstract class Worker<I> : Nameable {
 
     abstract suspend fun confirm(request: Request<I>): Boolean
 
-    abstract suspend fun work(request: Request<I>, block: (it: Result) -> Unit): Result
+    abstract suspend fun work(request: Request<I>, onResponse: (result: Result) -> Unit)
 
     fun onSuccess(block: () -> Unit) {
         block()

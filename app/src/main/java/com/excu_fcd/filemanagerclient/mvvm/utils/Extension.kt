@@ -3,6 +3,8 @@ package com.excu_fcd.filemanagerclient.mvvm.utils
 import android.util.Log
 import com.excu_fcd.filemanagerclient.mvvm.data.request.Operation
 import com.excu_fcd.filemanagerclient.mvvm.data.request.Request
+import com.excu_fcd.filemanagerclient.mvvm.data.request.type.EmptyOperationType
+import com.excu_fcd.filemanagerclient.mvvm.data.request.type.OperationType
 
 fun <T : Any> T.logIt(): T {
     Log.i("Loggable ($javaClass)", this.toString())
@@ -20,14 +22,14 @@ fun <I> MutableCollection<I>.item(element: I) {
 
 fun <I> MutableCollection<Operation<I>>.item(
     element: I,
-    type: Operation.Type = Operation.Type.EMPTY,
+    type: OperationType = EmptyOperationType(),
 ) {
     add(Operation(item = element, type = type))
 }
 
 fun <I> MutableCollection<Operation<I>>.items(
     data: List<I>,
-    type: Operation.Type = Operation.Type.EMPTY,
+    type: OperationType = EmptyOperationType(),
 ) {
     add(Operation(data = data, type = type))
 }

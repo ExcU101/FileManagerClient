@@ -13,7 +13,7 @@ class WorkerImpl : Worker<String>() {
         return "Worker Impl"
     }
 
-    override suspend fun work(request: Request<String>, block: (it: Result) -> Unit): Result {
+    override suspend fun work(request: Request<String>): Result {
         return Result.failure()
     }
 }

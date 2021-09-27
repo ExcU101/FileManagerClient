@@ -20,7 +20,7 @@ class Request<I> private constructor(
         return id
     }
 
-    protected fun updateProgress(value: Int) {
+    internal fun updateProgress(value: Int) {
         if (operations.size == value + progress) {
             progress = operations.size
         } else {

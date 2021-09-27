@@ -14,11 +14,13 @@ import com.excu_fcd.filemanagerclient.mvvm.data.request.Request
 import com.excu_fcd.filemanagerclient.mvvm.feature.manager.EmployerManager
 import com.excu_fcd.filemanagerclient.mvvm.feature.manager.FileNotificationManager
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.Worker
+import com.excu_fcd.filemanagerclient.mvvm.feature.worker.local.DeleteWorker
+import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Result
 import java.io.File
 import javax.inject.Inject
 
 class LocalManager @Inject constructor(private val context: Context) :
-    EmployerManager<String>(context = context) {
+    EmployerManager<LocalUriModel>(context = context) {
 
     private val notificationManager: FileNotificationManager =
         FileNotificationManager(context = context)
@@ -33,16 +35,28 @@ class LocalManager @Inject constructor(private val context: Context) :
         val SDCARD: File = Environment.getExternalStorageDirectory()
     }
 
-    private val workers = listOf<Worker<String>>()
+    private val workers = listOf<Worker<LocalUriModel>>(
+        DeleteWorker()
+    )
 
-    override suspend fun sendRequest(request: Request<String>) {
+    override suspend fun sendRequest(
+        request: Request<LocalUriModel>,
+        onResponse: (result: Result) -> Unit,
+    ) {
         if (!checkPermission(RES) && !checkPermission(WES)) return
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//            if (!checkPermission(MES)) {
+//                for (worker in workers) {
+//                    if (worker.confirm(request = request)) {
+//                        onResponse(worker.work(request = request))
+//                    }
+//                }
+//            }
+//        }
         for (worker in workers) {
             if (worker.confirm(request = request)) {
-                worker.work(request = request) {
-
-                }
-                break
+                worker.work(request = request, onResponse = onResponse)
             }
         }
     }
@@ -67,11 +81,11 @@ class LocalManager @Inject constructor(private val context: Context) :
     }
 
     override fun getTag(): String {
-        return "EMPTY_TAG"
+        return "LOCAL_PROVIDER_TAG"
     }
 
     override fun getName(): String {
-        return "Pizdec provider"
+        return "Local provider"
     }
 
 }
