@@ -70,9 +70,19 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:$composeVersion")
     implementation("androidx.compose.material:material:$composeVersion")
     implementation("androidx.compose.material:material-icons-core:$composeVersion")
-    runtimeOnly("androidx.compose.material:material-icons-extended:$composeVersion")
+    implementation("androidx.compose.material:material-icons-extended:$composeVersion")
+    implementation("androidx.navigation:navigation-compose:2.4.0-alpha09")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha03")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-beta01")
     implementation("androidx.activity:activity-compose:1.4.0-alpha02")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02")
+
+    // Accompanist
+    val accompanistVersion = "0.18.0"
+    implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-swiperefresh:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-permissions:$accompanistVersion")
 
     //Collection
     implementation("androidx.collection:collection-ktx:1.2.0-alpha01")
@@ -104,8 +114,6 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.6.0")
     implementation("androidx.appcompat:appcompat:1.3.1")
-    implementation("com.google.android.material:material:1.4.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.0")
 
 
 //    testImplementation "junit:junit:4.13.2"

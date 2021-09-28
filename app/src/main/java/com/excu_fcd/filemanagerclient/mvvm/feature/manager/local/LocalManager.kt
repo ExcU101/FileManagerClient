@@ -26,24 +26,48 @@ class LocalManager @Inject constructor(private val context: Context) :
         FileNotificationManager(context = context)
 
     companion object {
-        private const val RES = Manifest.permission.READ_EXTERNAL_STORAGE
-        private const val WES = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        const val RES: String = Manifest.permission.READ_EXTERNAL_STORAGE
+        const val WES: String = Manifest.permission.WRITE_EXTERNAL_STORAGE
 
         @RequiresApi(Build.VERSION_CODES.R)
-        private val MES = Manifest.permission.MANAGE_EXTERNAL_STORAGE
+        val MES = Manifest.permission.MANAGE_EXTERNAL_STORAGE
 
         val SDCARD: File = Environment.getExternalStorageDirectory()
+
+        fun checkState(path: File): Boolean {
+            return EnvironmentCompat.getStorageState(path) == Environment.MEDIA_MOUNTED
+        }
     }
 
     private val workers = listOf<Worker<LocalUriModel>>(
         DeleteWorker()
     )
 
+    fun checkPermissions(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Environment.isExternalStorageManager()
+        } else ContextCompat.checkSelfPermission(context,
+            WES) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(context,
+            RES) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun getListFromPath(path: File): List<LocalUriModel> {
+        if (!path.exists()) return emptyList()
+
+        if (checkPermissions()) {
+            if (checkState(path = path) && path.isDirectory) {
+                return path.listFiles()!!.map { LocalUriModel(uri = it.toUri()) }
+            }
+            return emptyList()
+        }
+        return emptyList()
+    }
+
     override suspend fun sendRequest(
         request: Request<LocalUriModel>,
         onResponse: (result: Result) -> Unit,
     ) {
-        if (!checkPermission(RES) && !checkPermission(WES)) return
+        if (!checkPermissions() && !checkPermissions()) return
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 //            if (!checkPermission(MES)) {
@@ -59,25 +83,6 @@ class LocalManager @Inject constructor(private val context: Context) :
                 worker.work(request = request, onResponse = onResponse)
             }
         }
-    }
-
-    fun getListFromPath(path: File): List<LocalUriModel> {
-        if (checkPermission(RES)) {
-            if (checkState(path = path) && path.isDirectory) {
-                return path.listFiles()!!.map { LocalUriModel(uri = it.toUri()) }
-            }
-            return emptyList()
-        }
-        return emptyList()
-    }
-
-    private fun checkState(path: File): Boolean {
-        return EnvironmentCompat.getStorageState(path) == Environment.MEDIA_MOUNTED
-    }
-
-    private fun checkPermission(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(context,
-            permission) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun getTag(): String {

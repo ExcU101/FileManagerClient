@@ -35,7 +35,8 @@ fun ListDialog(show: Boolean, onDismissRequest: () -> Unit) {
                             },
                             navigationIcon = {
                                 IconButton(onClick = {}) {
-                                    Icon(imageVector = Icons.Outlined.Close, contentDescription = null)
+                                    Icon(imageVector = Icons.Outlined.Close,
+                                        contentDescription = null)
                                 }
                             }
                         )
@@ -77,9 +78,7 @@ fun ListDialog(show: Boolean, onDismissRequest: () -> Unit) {
                     }) {
                     LazyColumn(contentPadding = PaddingValues(bottom = 56.dp)) {
                         items(150) {
-                            OneLineItem(text = "File $it", icon = Icons.Outlined.Delete) {
-
-                            }
+                            OneLineItem(text = "File $it", imageVector = Icons.Outlined.Delete)
                         }
                     }
                 }

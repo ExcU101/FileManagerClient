@@ -2,61 +2,38 @@ package com.excu_fcd.filemanagerclient.mvvm.ui
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import com.excu_fcd.filemanagerclient.mvvm.ui.component.ListDialog
-import com.excu_fcd.filemanagerclient.mvvm.viewmodel.MainViewModel
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.excu_fcd.filemanagerclient.mvvm.filemanager.FileManagerScreen
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val mainViewModel by viewModels<MainViewModel>()
-    private var mText = "0"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val text by remember {
-                mutableStateOf(mText)
-            }
-
             MaterialTheme {
-                Column(modifier = Modifier
-                    .fillMaxSize()
-                    .clickable {
-                        mainViewModel.logAll()
-                    },
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally) {
-                    GetContent()
+                val navController = rememberNavController()
+                val uiController = rememberSystemUiController()
+
+
+                SideEffect {
+                    uiController.setStatusBarColor(color = Color.White, darkIcons = true)
+                }
+
+                NavHost(navController = navController, startDestination = "FILE_MANAGER") {
+                    composable(route = "FILE_MANAGER") {
+                        FileManagerScreen()
+                    }
                 }
             }
         }
-    }
-
-    @Composable
-    fun GetContent() {
-        var show by remember {
-            mutableStateOf(false)
-        }
-
-        FloatingActionButton(onClick = {
-            show = true
-        }) {
-            ListDialog(show) {
-                show = !show
-            }
-        }
-
     }
 }

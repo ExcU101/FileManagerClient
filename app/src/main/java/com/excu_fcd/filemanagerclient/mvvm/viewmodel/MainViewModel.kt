@@ -15,7 +15,7 @@ class MainViewModel @Inject constructor(private val local: LocalManager) :
 
     fun logAll() {
         viewModelScope.launch {
-            flow.collect {
+            _flow.collect {
                 it.forEach { file ->
                     println(file.getName())
                 }
@@ -25,7 +25,7 @@ class MainViewModel @Inject constructor(private val local: LocalManager) :
 
     init {
         viewModelScope.launch {
-            flow.emit(
+            _flow.emit(
                 local.getListFromPath(SDCARD).sortedBy {
                     it.getName()
                 } as MutableList<LocalUriModel>

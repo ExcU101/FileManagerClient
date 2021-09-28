@@ -6,8 +6,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 abstract class BaseListViewModel<I> : ViewModel() {
-    protected val flow = MutableStateFlow(mutableListOf<I>())
 
-    fun getData(): StateFlow<List<I>> = flow.asStateFlow()
+    protected val _flow = MutableStateFlow(mutableListOf<I>())
+    val data: StateFlow<List<I>>
+        get() = _flow.asStateFlow()
 
 }
