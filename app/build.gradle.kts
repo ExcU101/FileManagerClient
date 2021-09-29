@@ -75,7 +75,7 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha03")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-beta01")
     implementation("androidx.activity:activity-compose:1.4.0-alpha02")
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-rc01")
 
     // Accompanist
     val accompanistVersion = "0.18.0"

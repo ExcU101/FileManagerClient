@@ -4,39 +4,48 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.LocalManager
 import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.LocalManager.Companion.SDCARD
-import com.excu_fcd.filemanagerclient.mvvm.filemanager.model.state.LocalDisplayStateModel
-import com.excu_fcd.filemanagerclient.mvvm.filemanager.model.state.LocalLoadingStateModel
-import com.excu_fcd.filemanagerclient.mvvm.filemanager.model.state.LocalRequirePermissionsStateModel
-import com.excu_fcd.filemanagerclient.mvvm.filemanager.model.state.LocalStateModel
+import com.excu_fcd.filemanagerclient.mvvm.filemanager.model.state.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class FileManagerViewModel @Inject constructor(private val localManager: LocalManager) :
     ViewModel() {
 
-    private val _files = MutableStateFlow<LocalStateModel>(LocalLoadingStateModel)
-    val files: StateFlow<LocalStateModel>
-        get() = _files.asStateFlow()
+    private val flow = MutableStateFlow<LocalStateModel>(LocalLoadingStateModel)
+    val state: StateFlow<LocalStateModel>
+        get() = flow.asStateFlow()
 
     init {
         reload()
     }
 
-    fun reload() {
+    fun reloadFromFile(startState: LocalStateModel = LocalLoadingStateModel, file: File = SDCARD) {
         viewModelScope.launch {
-            _files.emit(LocalLoadingStateModel)
+            flow.emit(startState)
             if (!localManager.checkPermissions()) {
-                return@launch _files.emit(LocalRequirePermissionsStateModel)
+                return@launch flow.emit(LocalRequirePermissionsStateModel)
             }
-            val files = localManager.getListFromPath(SDCARD)
-            _files.emit(LocalDisplayStateModel(files))
-        }
+            if (!file.exists()) {
+                return@launch flow.emit(LocalNotExistStateModel(file = file))
+            }
+            val files = localManager.getListFromPath(file)
+            if (files.isEmpty()) {
+                return@launch flow.emit(LocalEmptyDirStateModel(file = file))
+            }
 
+            flow.emit(LocalDisplayStateModel(files.sortedBy { it.getName() }
+                .groupBy { it.isDirectory() }))
+        }
+    }
+
+    fun reload() {
+        reloadFromFile()
     }
 
 }

@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.excu_fcd.filemanagerclient.mvvm.filemanager.FileManagerScreen
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
