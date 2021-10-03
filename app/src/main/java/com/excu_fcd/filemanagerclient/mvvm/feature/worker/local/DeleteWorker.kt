@@ -7,21 +7,16 @@ import com.excu_fcd.filemanagerclient.mvvm.feature.worker.Worker
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Result
 import java.io.File
 
-class DeleteWorker : Worker<LocalUriModel>() {
+class DeleteWorker : Worker<LocalUriModel> {
 
     override fun getName(): String {
         return "Delete worker"
     }
 
-    override suspend fun confirm(request: Request<LocalUriModel>): Boolean {
-        if (request.getOperations().isEmpty()) return false
-        if (request.getProgress() == request.getOperations().size) return false
-        return true
-    }
-
     override suspend fun work(
         request: Request<LocalUriModel>,
         onResponse: (result: Result) -> Unit,
+        onFullSuccess: (Result) -> Unit,
     ) {
         val operations = request.getOperations()
         operations.forEach { operation ->

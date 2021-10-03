@@ -1,7 +1,10 @@
 package com.excu_fcd.filemanagerclient.mvvm.di
 
 import android.content.Context
+import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
+import com.excu_fcd.filemanagerclient.mvvm.data.request.Request
 import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.LocalManager
+import com.excu_fcd.filemanagerclient.mvvm.feature.worker.task.WorkDependency
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,8 +27,10 @@ object SingletonModule {
     fun provideLocalEmployerManager(@ApplicationContext context: Context): LocalManager =
         LocalManager(context = context)
 
+
     @Provides
     @Singleton
-    fun getInt(): Int = 0
+    fun provideLocalWorkerDependency(request: Request<LocalUriModel>): WorkDependency =
+        WorkDependency(request = request)
 }
 

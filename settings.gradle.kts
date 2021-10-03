@@ -6,8 +6,8 @@ pluginManagement {
     }
     resolutionStrategy {
         eachPlugin {
-            val kotlinVersion = "1.5.30"
-            val androidVersion = "7.1.0-alpha12"
+            val kotlinVersion = "1.5.31"
+            val androidVersion = "7.1.0-alpha13"
             val hiltVersion = "2.38.1"
 
             if (requested.id.id.startsWith("org.jetbrains.kotlin")) {

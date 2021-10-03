@@ -1,15 +1,30 @@
 package com.excu_fcd.filemanagerclient.mvvm.utils
 
 import android.util.Log
-import androidx.compose.ui.unit.dp
+import androidx.recyclerview.widget.DiffUtil
+import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
 import com.excu_fcd.filemanagerclient.mvvm.data.request.Operation
 import com.excu_fcd.filemanagerclient.mvvm.data.request.Request
 import com.excu_fcd.filemanagerclient.mvvm.data.request.type.EmptyOperationType
 import com.excu_fcd.filemanagerclient.mvvm.data.request.type.OperationType
 
-val smallPadding = 4.dp
-val normalPadding = 8.dp
-val largePadding = 16.dp
+
+fun localDiffer(): DiffUtil.ItemCallback<LocalUriModel> {
+    return object : DiffUtil.ItemCallback<LocalUriModel>() {
+        override fun areItemsTheSame(oldItem: LocalUriModel, newItem: LocalUriModel): Boolean {
+            return oldItem.hashCode() == newItem.hashCode()
+        }
+
+        override fun areContentsTheSame(oldItem: LocalUriModel, newItem: LocalUriModel): Boolean {
+            return oldItem.getExtension() == newItem.getExtension() && oldItem.getName() == newItem.getName()
+        }
+
+    }
+}
+
+
+fun LocalUriModel.getTypedExtension() =
+    (if (isDirectory()) "Items: " else "Type: ") + getExtension()
 
 fun <T : Any> T.logIt(): T {
     Log.i("Loggable ($javaClass)", this.toString())

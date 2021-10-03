@@ -4,7 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManageClient/app/src/main/res/layout/activity_main.xml" value="0.14722222222222223" />
-        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/activity_main.xml" value="0.34923076923076923" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_file_24.xml" value="0.171" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_folder_24.xml" value="0.171" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/filemanager_fragment.xml" value="0.3546875" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/item_model_layout.xml" value="0.34923076923076923" />
       </map>
     </option>
   </component>

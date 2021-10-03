@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FileManageClient">
         <activity
-            android:name="com.excu_fcd.filemanagerclient.mvvm.ui.MainActivity"
+            android:name="com.excu_fcd.filemanagerclient.mvvm.ui.activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

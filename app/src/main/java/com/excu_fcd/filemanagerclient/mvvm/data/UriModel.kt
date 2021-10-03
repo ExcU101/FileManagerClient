@@ -30,4 +30,5 @@ open class UriModel(private val uri: Uri = Environment.getExternalStorageDirecto
     override fun getName(): String {
         return _name
     }
+
 }

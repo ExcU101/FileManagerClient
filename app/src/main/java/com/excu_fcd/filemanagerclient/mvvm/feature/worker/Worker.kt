@@ -1,14 +1,17 @@
 package com.excu_fcd.filemanagerclient.mvvm.feature.worker
 
 import com.excu_fcd.filemanagerclient.mvvm.data.Nameable
+import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
 import com.excu_fcd.filemanagerclient.mvvm.data.request.Request
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Result
 
-abstract class Worker<I> : Nameable {
+interface Worker<I> : Nameable {
 
-    abstract suspend fun confirm(request: Request<I>): Boolean
-
-    abstract suspend fun work(request: Request<I>, onResponse: (result: Result) -> Unit)
+    suspend fun confirm(request: Request<I>): Boolean {
+        if (request.getOperations().isEmpty()) return false
+        if (request.getProgress() == request.getOperations().size) return false
+        return true
+    }
 
     fun onSuccess(block: () -> Unit) {
         block()
@@ -18,4 +21,9 @@ abstract class Worker<I> : Nameable {
         block()
     }
 
+    suspend fun work(
+        request: Request<LocalUriModel>,
+        onResponse: (result: Result) -> Unit,
+        onFullSuccess: (Result) -> Unit = {},
+    )
 }
