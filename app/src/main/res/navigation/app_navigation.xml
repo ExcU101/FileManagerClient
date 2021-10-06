@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation"
     app:startDestination="@id/fileManagerFragment">
     <fragment
         android:id="@+id/fileManagerFragment"
         android:name="com.excu_fcd.filemanagerclient.mvvm.ui.fragment.FileManagerFragment"
-        android:label="FileManagerFragment" />
+        android:label="File Manager Fragment"
+        tools:layout="@layout/filemanager_fragment" />
 </navigation>

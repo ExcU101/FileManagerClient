@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.excu_fcd.filemanagerclient.databinding.ItemModelLayoutBinding
 
-class LocalViewHolder(private val root: View) : RecyclerView.ViewHolder(root) {
+class LocalViewHolder(root: View) : RecyclerView.ViewHolder(root) {
 
     val binding: ItemModelLayoutBinding = ItemModelLayoutBinding.bind(root)
 

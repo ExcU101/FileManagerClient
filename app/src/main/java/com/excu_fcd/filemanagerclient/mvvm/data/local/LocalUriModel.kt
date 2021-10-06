@@ -18,9 +18,6 @@ class LocalUriModel(
     fun getFile() = uri.toFile()
 
     @IgnoredOnParcel
-    public val extendedExtension: String = (if (isDirectory()) "Items: " else "Type: ") + getExtension()
-
-    @IgnoredOnParcel
     private val _extension = if (getName().contains(".") && !isDirectory()) {
         getName().substring(getName().lastIndexOf("."))
     } else if (isDirectory()) {
@@ -28,6 +25,9 @@ class LocalUriModel(
     } else {
         "BIN"
     }
+
+    @IgnoredOnParcel
+    val extendedExtension: String = (if (isDirectory()) "Items: " else "Type: ") + _extension
 
     override fun fromLength(): String {
         var index = 0

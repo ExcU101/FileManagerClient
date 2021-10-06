@@ -15,7 +15,7 @@ class CreateWorker : Worker<LocalUriModel> {
     override suspend fun work(
         request: Request<LocalUriModel>,
         onResponse: (result: Result) -> Unit,
-        onFullSuccess: (Result) -> Unit
+        onFullSuccess: (Result) -> Unit,
     ) {
         val operations = request.getOperations()
         operations.forEach { operation ->
