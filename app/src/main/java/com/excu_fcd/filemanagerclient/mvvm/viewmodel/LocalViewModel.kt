@@ -4,12 +4,18 @@ import android.os.Build
 import androidx.lifecycle.viewModelScope
 import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
 import com.excu_fcd.filemanagerclient.mvvm.data.request.Request
-import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.*
+import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.FolderEmptyState
+import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.LocalManager
 import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.LocalManager.Companion.SDCARD
+import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.state.RequirePermissionState
+import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.state.RequireSpecialPermissionState
+import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.state.SortedListState
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Result
 import com.excu_fcd.filemanagerclient.mvvm.viewmodel.state.LoadingState
 import com.excu_fcd.filemanagerclient.mvvm.viewmodel.state.ViewModelState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -19,10 +25,22 @@ class LocalViewModel @Inject constructor(
     private val manager: LocalManager,
 ) : BaseEventViewModel() {
 
+    private val _refreshFlow = MutableStateFlow(false)
+    val refreshState
+        get() = _refreshFlow.asStateFlow()
+
     init {
         viewModelScope.launch {
-            getEvent(startItem = LoadingState())
+            update()
         }
+    }
+
+    fun refresh(path: LocalUriModel) {
+        viewModelScope.launch {
+            _refreshFlow.emit(true)
+            _flow.emit(SortedListState(manager.getListFromPath(path = path.getFile())))
+        }
+        _refreshFlow.tryEmit(false)
     }
 
     fun update() {

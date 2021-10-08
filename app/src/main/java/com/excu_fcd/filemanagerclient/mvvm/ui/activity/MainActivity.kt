@@ -15,7 +15,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         binding?.let {
-            Toast.makeText(this, "Started!", Toast.LENGTH_SHORT).show()
             setContentView(it.root)
         }
     }

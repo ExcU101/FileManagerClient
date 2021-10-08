@@ -22,11 +22,8 @@ class DeleteWorker : Worker<LocalUriModel> {
         operations.forEach { operation ->
             if (operation.type is DeleteOperationType) {
                 operation.data.forEach {
-                    val result = getResult(file = it.getFile())
-                    if (result == Result.success()) {
-                        request.updateProgress(1)
-                    }
-                    onResponse(result)
+                    request.updateProgress(1)
+                    onResponse(getResult(file = it.getFile()))
                 }
             }
         }

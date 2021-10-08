@@ -41,14 +41,14 @@ abstract class AbsAdapter<T, VH : RecyclerView.ViewHolder>(
     }
 
     fun insertItemAt(position: Int, item: T) {
-        if (currentList.contains(item)) {
+        if (!currentList.contains(item)) {
             currentList.add(position, item)
             notifyItemInserted(position)
         }
     }
 
     fun insertItem(item: T) {
-        if (currentList.contains(item)) {
+        if (!currentList.contains(item)) {
             currentList.add(item)
             notifyItemInserted(getIndex(item))
         }

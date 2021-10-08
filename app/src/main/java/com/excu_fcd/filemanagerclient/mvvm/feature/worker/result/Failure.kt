@@ -1,4 +1,4 @@
 package com.excu_fcd.filemanagerclient.mvvm.feature.worker.result
 
-class Failure(reason: String = "Empty reason") : Result() {
+data class Failure(val reason: String = "Empty reason") : Result() {
 }

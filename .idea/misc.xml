@@ -7,10 +7,14 @@
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_file_24.xml" value="0.171" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_folder_24.xml" value="0.171" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_more_24.xml" value="0.1" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_refresh_24.xml" value="0.1" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout-v23/item_model_layout.xml" value="0.34923076923076923" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/filemanager_fragment.xml" value="0.1" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/create_now_fragment.xml" value="0.22" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/dialog_create_layout.xml" value="0.24537037037037038" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/filemanager_fragment.xml" value="0.25" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/item_model_layout.xml" value="0.25" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/menu/bar_menu.xml" value="1.2402234636871508" />
       </map>
     </option>
   </component>

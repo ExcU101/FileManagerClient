@@ -5,14 +5,21 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.excu_fcd.filemanagerclient.R
 import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
 import com.excu_fcd.filemanagerclient.mvvm.data.request.Operation
 import com.excu_fcd.filemanagerclient.mvvm.data.request.Request
 import com.excu_fcd.filemanagerclient.mvvm.data.request.type.EmptyOperationType
 import com.excu_fcd.filemanagerclient.mvvm.data.request.type.OperationType
+import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Failure
+import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Result
+import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Success
 import com.google.android.material.snackbar.Snackbar
+import java.io.File
 
 
 fun localDiffer(): DiffUtil.ItemCallback<LocalUriModel> =
@@ -27,9 +34,12 @@ fun localDiffer(): DiffUtil.ItemCallback<LocalUriModel> =
 
     }
 
+fun File.asLocalUriModel() = LocalUriModel(toUri())
+
 inline fun <T> list(block: MutableList<T>.() -> Unit): List<T> {
     return mutableListOf<T>().apply(block)
 }
+
 
 fun <T> MutableList<T>.item(item: T) {
     add(item)
@@ -42,6 +52,10 @@ fun <T> MutableList<T>.typedItem(item: T): T {
     }
 }
 
+fun RecyclerView.touchHelper(callback: ItemTouchHelper.Callback) {
+    ItemTouchHelper(callback).attachToRecyclerView(this)
+}
+
 fun <T> sortedList(comparator: Comparator<T>, block: MutableList<T>.() -> Unit): List<T> {
     return mutableListOf<T>().apply(block).sortedWith(comparator = comparator)
 }
@@ -50,6 +64,9 @@ fun sortedList(block: MutableList<String>.() -> Unit): List<String> {
     return mutableListOf<String>().apply(block)
         .sortedWith(comparator = String.CASE_INSENSITIVE_ORDER)
 }
+
+fun Result.isSuccess() = this is Success
+fun Result.isFailure() = this is Failure
 
 fun View.popup(
     items: List<String> = emptyList(),

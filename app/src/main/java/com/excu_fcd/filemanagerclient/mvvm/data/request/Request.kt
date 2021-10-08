@@ -13,7 +13,7 @@ class Request<I> private constructor(
     private val operations: List<Operation<I>>,
 ) : Nameable, Idable {
 
-    private var progress = 0
+    private var progress: Int = 0
     private var status: Status = Status.empty()
 
     override fun getId(): Int {
@@ -30,7 +30,7 @@ class Request<I> private constructor(
 
     fun getStatus(): Status = status
 
-    fun getProgress() = progress
+    fun getProgress(): Int = progress
 
     fun getOperations(): List<Operation<I>> = operations
 
@@ -71,7 +71,8 @@ class Request<I> private constructor(
             _operations.addAll(mutableListOf<Operation<I>>().apply(block))
         }
 
-        fun build(): Request<I> = Request(name = _name, id = _id, operations = _operations)
+        fun build(): Request<I> =
+            Request(name = _name, id = _id, operations = _operations)
     }
 
 }

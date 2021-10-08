@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
@@ -16,7 +15,6 @@ import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
 import com.excu_fcd.filemanagerclient.mvvm.data.request.Request
 import com.excu_fcd.filemanagerclient.mvvm.feature.manager.EmployerManager
 import com.excu_fcd.filemanagerclient.mvvm.feature.manager.FileNotificationManager
-import com.excu_fcd.filemanagerclient.mvvm.feature.worker.Worker
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.local.CreateWorker
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.local.DeleteWorker
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Result
@@ -53,9 +51,8 @@ class LocalManager @Inject constructor(private val context: Context) :
         CreateWorker()
     )
 
-    fun requireSpecialPermission(): Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        Environment.isExternalStorageManager()
-    } else false
+    @RequiresApi(Build.VERSION_CODES.R)
+    fun requireSpecialPermission(): Boolean = Environment.isExternalStorageManager()
 
     fun checkPermissions(): Boolean {
         return ContextCompat.checkSelfPermission(context,
@@ -92,7 +89,7 @@ class LocalManager @Inject constructor(private val context: Context) :
 //        }
         for (worker in workers) {
             if (worker.confirm(request = request)) {
-                worker.work(request = request, onResponse = onResponse)
+                worker.work(request = request, onResponse)
             }
         }
     }
