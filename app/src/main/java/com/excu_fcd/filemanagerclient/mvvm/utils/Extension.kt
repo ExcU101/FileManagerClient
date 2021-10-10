@@ -1,8 +1,11 @@
 package com.excu_fcd.filemanagerclient.mvvm.utils
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.View.MeasureSpec.*
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.net.toUri
@@ -20,7 +23,38 @@ import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Result
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Success
 import com.google.android.material.snackbar.Snackbar
 import java.io.File
+import kotlin.math.max
 
+
+const val localBookmark = "localBookmark"
+const val remoteBookmark = "remoteBookmark"
+
+fun View.makeMeasure(spec: Int, desire: Int): Int {
+    return when {
+        spec.exactly() -> {
+            spec.getSize()
+        }
+        spec.atMost() -> {
+            max(spec.getSize(), desire)
+        }
+        else -> {
+            desire
+        }
+    }
+}
+
+fun Context.dp(value: Int): Int {
+    return (resources.displayMetrics.density * value).toInt()
+}
+
+fun Int.getMode() = View.MeasureSpec.getMode(this)
+fun Int.getSize() = View.MeasureSpec.getSize(this)
+fun Int.atMost() = getMode() == AT_MOST
+fun Int.exactly() = getMode() == EXACTLY
+fun Int.unspecified() = getMode() == UNSPECIFIED
+
+val Context.layoutInflater: LayoutInflater
+    get() = LayoutInflater.from(this)
 
 fun localDiffer(): DiffUtil.ItemCallback<LocalUriModel> =
     object : DiffUtil.ItemCallback<LocalUriModel>() {
@@ -51,6 +85,8 @@ fun <T> MutableList<T>.typedItem(item: T): T {
         return this
     }
 }
+
+fun Context.uriPackage() = Uri.fromParts("package", packageName, null)
 
 fun RecyclerView.touchHelper(callback: ItemTouchHelper.Callback) {
     ItemTouchHelper(callback).attachToRecyclerView(this)

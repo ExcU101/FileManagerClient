@@ -6,6 +6,7 @@ import androidx.core.net.toUri
 import com.excu_fcd.filemanagerclient.mvvm.data.Size
 import com.excu_fcd.filemanagerclient.mvvm.data.UriModel
 import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.LocalManager.Companion.SDCARD
+import com.excu_fcd.filemanagerclient.mvvm.utils.asLocalUriModel
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -25,6 +26,9 @@ class LocalUriModel(
     } else {
         "BIN"
     }
+
+    fun getParent(): LocalUriModel? = uri.toFile().parentFile?.asLocalUriModel()
+
 
     @IgnoredOnParcel
     val extendedExtension: String = (if (isDirectory()) "Items: " else "Type: ") + _extension

@@ -93,10 +93,16 @@ dependencies {
     val workVersion = "2.6.0"
     implementation("androidx.work:work-runtime-ktx:$workVersion")
 
+    // Data store
+    val dataVersion = "1.0.0"
+    implementation("androidx.datastore:datastore:$dataVersion")
+    implementation("androidx.datastore:datastore-preferences:$dataVersion")
+
     implementation("androidx.core:core-ktx:1.6.0")
     implementation("androidx.appcompat:appcompat:1.3.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("com.google.android.material:material:1.5.0-alpha04")
+
 
 
 //    testImplementation "junit:junit:4.13.2"

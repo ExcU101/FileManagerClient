@@ -3,12 +3,17 @@ package com.excu_fcd.filemanagerclient.mvvm.ui.adapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 
 abstract class AbsAdapter<T, VH : RecyclerView.ViewHolder>(
-    val differ: DiffUtil.ItemCallback<T>,
+    differ: DiffUtil.ItemCallback<T>,
 ) : ListAdapter<T, VH>(differ) {
 
     val list: MutableList<T> = mutableListOf()
+
+    protected val scope = CoroutineScope(IO)
 
     override fun getCurrentList(): MutableList<T> = list
 
@@ -17,13 +22,15 @@ abstract class AbsAdapter<T, VH : RecyclerView.ViewHolder>(
     }
 
     fun setData(newData: Collection<T>) {
-        list.clear()
-        list.addAll(newData)
-        notifyItemRangeChanged(0, itemCount)
+        scope.launch {
+            list.clear()
+            list.addAll(newData)
+        }
+        notifyItemRangeChanged(0, list.size)
     }
 
     fun addData(newData: List<T>) {
-        list.addAll(newData)
+        scope.launch { list.addAll(newData) }
         notifyItemRangeChanged(0, itemCount)
     }
 

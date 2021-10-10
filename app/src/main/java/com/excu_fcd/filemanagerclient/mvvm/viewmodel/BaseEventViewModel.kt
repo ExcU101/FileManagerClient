@@ -9,6 +9,6 @@ import kotlinx.coroutines.flow.asStateFlow
 abstract class BaseEventViewModel : ViewModel(), EventHandler<ViewModelState> {
 
     protected val _flow = MutableStateFlow(ViewModelState.empty())
-    val data = _flow.asStateFlow()
+    val dataState = _flow.asStateFlow()
 
 }
