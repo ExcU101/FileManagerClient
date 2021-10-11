@@ -18,6 +18,7 @@ import com.excu_fcd.filemanagerclient.mvvm.feature.manager.FileNotificationManag
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.local.CreateWorker
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.local.DeleteWorker
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Result
+import com.excu_fcd.filemanagerclient.mvvm.utils.asLocalUriModel
 import java.io.File
 import javax.inject.Inject
 
@@ -58,6 +59,10 @@ class LocalManager @Inject constructor(private val context: Context) :
         return ContextCompat.checkSelfPermission(context,
             WES) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(context,
             RES) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun getExternalDirs() = context.getExternalFilesDir(null)!!.listFiles().map {
+        it.asLocalUriModel()
     }
 
     fun getListFromPath(path: File): List<LocalUriModel> {

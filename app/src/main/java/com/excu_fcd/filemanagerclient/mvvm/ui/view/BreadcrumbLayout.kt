@@ -3,11 +3,13 @@ package com.excu_fcd.filemanagerclient.mvvm.ui.view
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
+import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.HorizontalScrollView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.isVisible
+import com.excu_fcd.filemanagerclient.R
 import com.excu_fcd.filemanagerclient.databinding.BreadcrumbItemBinding
 import com.excu_fcd.filemanagerclient.mvvm.data.BreadcrumbItem
 import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
@@ -27,6 +29,7 @@ class BreadcrumbLayout : HorizontalScrollView {
     }
 
     private var isLayoutDirty = false
+    private var isScrollToSelectedItemPending = false
 
     init {
         setBackgroundColor(Color.WHITE)
@@ -60,19 +63,38 @@ class BreadcrumbLayout : HorizontalScrollView {
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         super.onLayout(changed, l, t, r, b)
         isLayoutDirty = false
+        if (isScrollToSelectedItemPending) {
+            scrollToSelected()
+            isScrollToSelectedItemPending = false
+        }
     }
 
-    fun scrollToSelected() {
+    private fun scrollToSelected() {
+        if (isLayoutDirty) {
+            isScrollToSelectedItemPending = true
+            return
+        }
         _item?.let {
-            val selected = items.getChildAt(it.selected)
-
+            val selectedItem = items.getChildAt(it.selected)
+            val sX = if (layoutDirection == View.LAYOUT_DIRECTION_LTR) {
+                selectedItem.left - items.paddingStart
+            } else {
+                selectedItem.right - width + items.paddingStart
+            }
+            if (isShown) {
+                smoothScrollTo(sX, 0)
+            } else {
+                scrollTo(sX, 0)
+            }
         }
     }
 
     fun setItem(item: BreadcrumbItem) {
+        if (_item != null && item == _item) return
         _item = item
         inflate()
         bind()
+        scrollToSelected()
     }
 
     private fun inflate() {
@@ -94,11 +116,15 @@ class BreadcrumbLayout : HorizontalScrollView {
                 val binding = items.getChildAt(i).tag as BreadcrumbItemBinding
                 binding.text.text = it.models[i].getName()
                 binding.arrow.isVisible = i != it.models.size - 1
+                binding.root.isActivated = it.selected == i
+                if (it.selected == i) {
+                    binding.text.setBackgroundColor(resources.getColor(R.color.ripple))
+                }
                 binding.root.setOnClickListener { _ ->
                     if (it.selected == i) {
                         scrollToSelected()
                     } else {
-                        _listener?.navigateTo(it.models[i])
+                        _listener?.navigateTo(model = it.models[i])
                     }
                 }
             }

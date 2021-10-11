@@ -27,6 +27,9 @@ class LocalUriModel(
         "BIN"
     }
 
+//    fun getNamedParent(): String? =
+//        if (getPath() == "Null path") null else getPath().substring(getPath().lastIndexOf("/"))
+
     fun getParent(): LocalUriModel? = uri.toFile().parentFile?.asLocalUriModel()
 
 

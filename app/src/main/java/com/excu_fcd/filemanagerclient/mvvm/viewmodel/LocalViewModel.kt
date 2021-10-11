@@ -39,7 +39,9 @@ class LocalViewModel @Inject constructor(
         get() = _loadingFlow.asStateFlow()
 
     private val _currentPathFlow =
-        state.getStateFlow(viewModelScope, "currentPath", SDCARD.asLocalUriModel())
+        state.getStateFlow(viewModelScope,
+            "currentPath",
+            SDCARD.asLocalUriModel())
     val currentPathFlow
         get() = _currentPathFlow.asStateFlow()
 
@@ -107,6 +109,7 @@ class LocalViewModel @Inject constructor(
 
         with(manager.getListFromPath(file)) {
             state["currentPath"] = file.asLocalUriModel()
+            _currentPathFlow.value = file.asLocalUriModel()
             if (isEmpty()) {
                 _loadingFlow.emit(false)
                 return _filesListState.emit(value = FolderEmptyState(file = file))

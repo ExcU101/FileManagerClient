@@ -66,6 +66,8 @@ class FileManagerFragment :
         val context = requireContext()
         with(binding!!) {
             list.adapter = adapter
+            list.setHasFixedSize(true)
+            breadcrumbs.setListener(this@FileManagerFragment)
             refresh.setOnRefreshListener {
                 viewModel.refresh()
             }
@@ -106,8 +108,8 @@ class FileManagerFragment :
     }
 
     override fun navigateTo(model: LocalUriModel) {
-        binding?.breadcrumbs?.setItem(BreadcrumbItem.create(model))
         viewModel.updateFromFile(file = model.getFile())
+//        binding?.breadcrumbs?.setItem(BreadcrumbItem.create(viewModel.currentPathFlow.value))
     }
 
     override fun onClick(item: LocalUriModel, view: View) {

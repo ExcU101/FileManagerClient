@@ -8,22 +8,20 @@ data class BreadcrumbItem(val models: List<LocalUriModel>, val selected: Int) {
 
     companion object {
         fun create(originalPath: LocalUriModel): BreadcrumbItem {
-            val list: List<LocalUriModel> =
+            val pair =
                 createPathList(originalPath = originalPath)
-            val index: Int = list.indexOf(originalPath)
 
-            return BreadcrumbItem(models = list, selected = index)
+            return BreadcrumbItem(models = pair.first, selected = pair.second)
         }
 
         fun create(originalPath: File): BreadcrumbItem {
-            val list: List<LocalUriModel> =
+            val pair =
                 createPathList(originalPath = originalPath.asLocalUriModel())
-            val index: Int = list.indexOf(originalPath.asLocalUriModel())
 
-            return BreadcrumbItem(models = list, selected = index)
+            return BreadcrumbItem(models = pair.first, selected = pair.second)
         }
 
-        private fun createPathList(originalPath: LocalUriModel): List<LocalUriModel> {
+        private fun createPathList(originalPath: LocalUriModel): Pair<List<LocalUriModel>, Int> {
             var path: File = originalPath.getFile()
             val trip = mutableListOf<File>()
             while (true) {
@@ -31,7 +29,8 @@ data class BreadcrumbItem(val models: List<LocalUriModel>, val selected: Int) {
                 path = path.parentFile ?: break
             }
             trip.reverse()
-            return trip.map { it.asLocalUriModel() }
+            val index = trip.size - 1
+            return Pair(first = trip.map { it.asLocalUriModel() }, second = index)
         }
     }
 

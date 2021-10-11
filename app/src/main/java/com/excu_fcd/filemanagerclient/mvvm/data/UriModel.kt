@@ -23,6 +23,8 @@ open class UriModel(private val uri: Uri = Environment.getExternalStorageDirecto
         _path
     }
 
+    fun getPath(): String = _path
+
     override fun getId(): Int {
         return Random.nextInt()
     }

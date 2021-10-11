@@ -1,8 +1,10 @@
 package com.excu_fcd.filemanagerclient.mvvm.ui.adapter
 
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -11,26 +13,26 @@ abstract class AbsAdapter<T, VH : RecyclerView.ViewHolder>(
     differ: DiffUtil.ItemCallback<T>,
 ) : ListAdapter<T, VH>(differ) {
 
-    val list: MutableList<T> = mutableListOf()
+//    val list: MutableList<T> = mutableListOf()
 
     protected val scope = CoroutineScope(IO)
 
-    override fun getCurrentList(): MutableList<T> = list
+//    override fun getCurrentList(): MutableList<T> = list
 
-    override fun getItemCount(): Int {
-        return list.size
-    }
+//    override fun getItemCount(): Int {
+//        return list.size
+//    }
 
     fun setData(newData: Collection<T>) {
-        scope.launch {
-            list.clear()
-            list.addAll(newData)
-        }
-        notifyItemRangeChanged(0, list.size)
+        submitList(newData.toList())
+    }
+
+    override fun onCurrentListChanged(previousList: MutableList<T>, currentList: MutableList<T>) {
+        super.onCurrentListChanged(previousList, currentList)
     }
 
     fun addData(newData: List<T>) {
-        scope.launch { list.addAll(newData) }
+        scope.launch { currentList.addAll(newData) }
         notifyItemRangeChanged(0, itemCount)
     }
 

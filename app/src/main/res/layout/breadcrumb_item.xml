@@ -11,13 +11,12 @@
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
         android:background="@drawable/breadcrumb_item_foreground"
-        android:duplicateParentState="true"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
         android:text="Sex"
-        android:layout_marginHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.Design.Tab"
         android:textColor="#000000"
         app:textAllCaps="false" />
@@ -26,6 +25,7 @@
         android:id="@+id/arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_arrow_right_24" />
+        android:src="@drawable/ic_arrow_right_24"
+        app:tint="@color/black" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
