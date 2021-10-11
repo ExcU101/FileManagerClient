@@ -1,6 +1,5 @@
 package com.excu_fcd.filemanagerclient.mvvm.ui.adapter.swipe
 
-import android.graphics.Canvas
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.LEFT
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT

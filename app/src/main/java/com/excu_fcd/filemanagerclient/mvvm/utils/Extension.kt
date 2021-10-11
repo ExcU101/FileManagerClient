@@ -9,19 +9,22 @@ import android.view.View.MeasureSpec.*
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.net.toUri
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.asFlow
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.excu_fcd.filemanagerclient.R
 import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
-import com.excu_fcd.filemanagerclient.mvvm.data.request.Operation
 import com.excu_fcd.filemanagerclient.mvvm.data.request.Request
-import com.excu_fcd.filemanagerclient.mvvm.data.request.type.EmptyOperationType
-import com.excu_fcd.filemanagerclient.mvvm.data.request.type.OperationType
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Failure
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Result
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Success
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.math.max
 
@@ -56,6 +59,9 @@ fun Int.unspecified() = getMode() == UNSPECIFIED
 val Context.layoutInflater: LayoutInflater
     get() = LayoutInflater.from(this)
 
+fun View.zeroAlphaAnim() = animate().alpha(0F).start()
+fun View.oneAlphaAnim() = animate().alpha(1F).start()
+
 fun localDiffer(): DiffUtil.ItemCallback<LocalUriModel> =
     object : DiffUtil.ItemCallback<LocalUriModel>() {
         override fun areItemsTheSame(oldItem: LocalUriModel, newItem: LocalUriModel): Boolean {
@@ -70,35 +76,10 @@ fun localDiffer(): DiffUtil.ItemCallback<LocalUriModel> =
 
 fun File.asLocalUriModel() = LocalUriModel(toUri())
 
-inline fun <T> list(block: MutableList<T>.() -> Unit): List<T> {
-    return mutableListOf<T>().apply(block)
-}
-
-
-fun <T> MutableList<T>.item(item: T) {
-    add(item)
-}
-
-fun <T> MutableList<T>.typedItem(item: T): T {
-    with(item) {
-        add(item)
-        return this
-    }
-}
-
 fun Context.uriPackage() = Uri.fromParts("package", packageName, null)
 
 fun RecyclerView.touchHelper(callback: ItemTouchHelper.Callback) {
     ItemTouchHelper(callback).attachToRecyclerView(this)
-}
-
-fun <T> sortedList(comparator: Comparator<T>, block: MutableList<T>.() -> Unit): List<T> {
-    return mutableListOf<T>().apply(block).sortedWith(comparator = comparator)
-}
-
-fun sortedList(block: MutableList<String>.() -> Unit): List<String> {
-    return mutableListOf<String>().apply(block)
-        .sortedWith(comparator = String.CASE_INSENSITIVE_ORDER)
 }
 
 fun Result.isSuccess() = this is Success
@@ -151,25 +132,26 @@ fun String.logIt(): String {
     return this
 }
 
-fun <I> MutableCollection<I>.item(element: I) = add(element)
+fun <T> SavedStateHandle.getStateFlow(
+    scope: CoroutineScope,
+    key: String,
+    initialValue: T,
+): MutableStateFlow<T> {
+    val savedStateHandle = this
+    val flow = MutableStateFlow(initialValue)
 
+    scope.launch {
+        flow.collect {
+            savedStateHandle[key] = it
+        }
+    }
 
-fun <I> MutableCollection<Operation<I>>.item(
-    element: I,
-    type: OperationType = EmptyOperationType(),
-) {
-    add(Operation(item = element, type = type))
-}
-
-fun <I> MutableCollection<Operation<I>>.items(
-    data: List<I>,
-    type: OperationType = EmptyOperationType(),
-) {
-    add(Operation(data = data, type = type))
-}
-
-fun <I> MutableCollection<I>.items(elements: Collection<I>) {
-    addAll(elements)
+    scope.launch {
+        savedStateHandle.getLiveData<T>(key).asFlow().collect {
+            flow.value = it
+        }
+    }
+    return flow
 }
 
 @DslMarker

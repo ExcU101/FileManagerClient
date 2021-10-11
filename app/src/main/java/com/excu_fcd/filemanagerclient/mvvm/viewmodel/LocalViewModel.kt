@@ -2,6 +2,7 @@ package com.excu_fcd.filemanagerclient.mvvm.viewmodel
 
 import android.os.Build
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
 import com.excu_fcd.filemanagerclient.mvvm.data.request.Request
@@ -13,6 +14,7 @@ import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.state.RequireSp
 import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.state.SortedListState
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Result
 import com.excu_fcd.filemanagerclient.mvvm.utils.asLocalUriModel
+import com.excu_fcd.filemanagerclient.mvvm.utils.getStateFlow
 import com.excu_fcd.filemanagerclient.mvvm.viewmodel.state.LoadingState
 import com.excu_fcd.filemanagerclient.mvvm.viewmodel.state.ViewModelState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +28,7 @@ import javax.inject.Inject
 class LocalViewModel @Inject constructor(
     private val manager: LocalManager,
     private val state: SavedStateHandle,
-) : BaseEventViewModel() {
+) : ViewModel() {
 
     private val _refreshFlow = MutableStateFlow(false)
     val refreshState
@@ -36,27 +38,36 @@ class LocalViewModel @Inject constructor(
     val loadingState
         get() = _loadingFlow.asStateFlow()
 
-    private val _currentPathFlow = MutableStateFlow(SDCARD.asLocalUriModel())
+    private val _currentPathFlow =
+        state.getStateFlow(viewModelScope, "currentPath", SDCARD.asLocalUriModel())
     val currentPathFlow
         get() = _currentPathFlow.asStateFlow()
 
+    private val _filesListState: MutableStateFlow<ViewModelState> =
+        MutableStateFlow(LoadingState)
+    val fileListState
+        get() = _filesListState.asStateFlow()
+
     init {
         viewModelScope.launch {
+            restore()
             update()
         }
     }
 
-    fun restore() {
-        state.get<String>("currentPath")
+    private fun restore() {
+        if (!state.contains("currentPath")) {
+            state.set("currentPath", SDCARD.asLocalUriModel())
+        }
     }
 
     fun refresh(path: LocalUriModel = this.currentPathFlow.value) {
         viewModelScope.launch {
             _refreshFlow.emit(true)
-            _flow.emit(LoadingState)
+            _filesListState.emit(LoadingState)
             val list = manager.getListFromPath(path = path.getFile())
             if (list.isNotEmpty()) {
-                _flow.emit(SortedListState(list))
+                _filesListState.emit(SortedListState(list))
             }
         }
         _refreshFlow.tryEmit(false)
@@ -64,51 +75,45 @@ class LocalViewModel @Inject constructor(
 
     fun update() {
         viewModelScope.launch {
-            getEvent(LoadingState)
+            getEventFromFile(currentPathFlow.value.getFile())
         }
     }
 
-    fun updateFromFile(file: File, startState: ViewModelState = LoadingState) {
+    fun updateFromFile(file: File) {
         viewModelScope.launch {
-            getEventFromFile(startItem = startState, file = file)
+            getEventFromFile(file = file)
         }
     }
 
-    suspend fun request(request: Request<LocalUriModel>, onResponse: (Result) -> Unit) {
+    suspend fun request(request: Request<LocalUriModel>, onResponse: (Result) -> Unit = { }) {
         manager.sendRequest(request = request, onResponse = onResponse)
     }
 
     private suspend fun getEventFromFile(
-        startItem: ViewModelState,
         file: File,
     ) {
         _loadingFlow.emit(true)
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (!manager.requireSpecialPermission()) {
+            if (manager.requireSpecialPermission()) {
                 _loadingFlow.emit(false)
-                _flow.emit(value = RequireSpecialPermissionState())
+                return _filesListState.emit(value = RequireSpecialPermissionState())
             }
         } else {
             if (!manager.checkPermissions()) {
                 _loadingFlow.emit(false)
-                return _flow.emit(value = RequirePermissionState())
+                return _filesListState.emit(value = RequirePermissionState())
             }
         }
 
         with(manager.getListFromPath(file)) {
+            state["currentPath"] = file.asLocalUriModel()
             if (isEmpty()) {
                 _loadingFlow.emit(false)
-                return _flow.emit(value = FolderEmptyState(file = file))
+                return _filesListState.emit(value = FolderEmptyState(file = file))
             }
             _loadingFlow.emit(false)
-            return _flow.emit(value = SortedListState(list = sortedBy { it.getName() }))
+            return _filesListState.emit(value = SortedListState(list = sortedBy { it.getName() }))
         }
-    }
-
-
-    override suspend fun getEvent(startItem: ViewModelState) {
-        getEventFromFile(startItem = startItem, file = SDCARD)
     }
 
 }

@@ -8,12 +8,19 @@ data class BreadcrumbItem(val models: List<LocalUriModel>, val selected: Int) {
 
     companion object {
         fun create(originalPath: LocalUriModel): BreadcrumbItem {
-            return BreadcrumbItem(createPathList(originalPath = originalPath), selected = 1)
+            val list: List<LocalUriModel> =
+                createPathList(originalPath = originalPath)
+            val index: Int = list.indexOf(originalPath)
+
+            return BreadcrumbItem(models = list, selected = index)
         }
 
         fun create(originalPath: File): BreadcrumbItem {
-            return BreadcrumbItem(createPathList(originalPath = originalPath.asLocalUriModel()),
-                selected = 1)
+            val list: List<LocalUriModel> =
+                createPathList(originalPath = originalPath.asLocalUriModel())
+            val index: Int = list.indexOf(originalPath.asLocalUriModel())
+
+            return BreadcrumbItem(models = list, selected = index)
         }
 
         private fun createPathList(originalPath: LocalUriModel): List<LocalUriModel> {

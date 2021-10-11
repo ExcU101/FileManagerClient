@@ -12,6 +12,7 @@ data class Operation<I>(
     val type: @RawValue OperationType = EmptyOperationType(),
 ) : Parcelable {
 
-    constructor(item: I, type: @RawValue OperationType = EmptyOperationType()) : this(data = listOf(item), type = type)
+    constructor(item: I, type: @RawValue OperationType = EmptyOperationType()) : this(data = listOf(
+        item), type = type)
 
 }

@@ -62,6 +62,13 @@ class BreadcrumbLayout : HorizontalScrollView {
         isLayoutDirty = false
     }
 
+    fun scrollToSelected() {
+        _item?.let {
+            val selected = items.getChildAt(it.selected)
+
+        }
+    }
+
     fun setItem(item: BreadcrumbItem) {
         _item = item
         inflate()
@@ -88,10 +95,18 @@ class BreadcrumbLayout : HorizontalScrollView {
                 binding.text.text = it.models[i].getName()
                 binding.arrow.isVisible = i != it.models.size - 1
                 binding.root.setOnClickListener { _ ->
-                    _listener?.navigateTo(it.models[i])
+                    if (it.selected == i) {
+                        scrollToSelected()
+                    } else {
+                        _listener?.navigateTo(it.models[i])
+                    }
                 }
             }
         }
+    }
+
+    fun setListener(listener: Listener) {
+        _listener = listener
     }
 
     interface Listener {

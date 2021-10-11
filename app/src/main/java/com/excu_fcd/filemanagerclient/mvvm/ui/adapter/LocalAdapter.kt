@@ -35,9 +35,8 @@ class LocalAdapter : AbsAdapter<LocalUriModel, LocalViewHolder>(localDiffer()) {
 
     override fun onBindViewHolder(holder: LocalViewHolder, position: Int) {
         val item = currentList[position]
-
         with(holder.binding) {
-            root.setOnClickListener { view ->
+            itemRoot.setOnClickListener { view ->
                 listener?.onClick(item = item, view = view)
             }
 

@@ -52,7 +52,7 @@ class LocalManager @Inject constructor(private val context: Context) :
     )
 
     @RequiresApi(Build.VERSION_CODES.R)
-    fun requireSpecialPermission(): Boolean = Environment.isExternalStorageManager()
+    fun requireSpecialPermission(): Boolean = !Environment.isExternalStorageManager()
 
     fun checkPermissions(): Boolean {
         return ContextCompat.checkSelfPermission(context,
@@ -72,11 +72,24 @@ class LocalManager @Inject constructor(private val context: Context) :
         return emptyList()
     }
 
+    fun getListFromPath(model: LocalUriModel): List<LocalUriModel> {
+        val file = model.getFile()
+        if (!file.exists()) return emptyList()
+
+        if (checkPermissions()) {
+            if (checkState(path = file) && file.isDirectory) {
+                return file.listFiles()!!.map { LocalUriModel(uri = it.toUri()) }
+            }
+            return emptyList()
+        }
+        return emptyList()
+    }
+
     override suspend fun sendRequest(
         request: Request<LocalUriModel>,
         onResponse: (result: Result) -> Unit,
     ) {
-        if (!checkPermissions() && !checkPermissions()) return
+        if (checkPermissions()) return
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 //            if (!checkPermission(MES)) {

@@ -1,4 +1,7 @@
 package com.excu_fcd.filemanagerclient.mvvm.viewmodel.state
 
-object LoadingState : ViewModelState {
-}
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+object LoadingState : ViewModelState, Parcelable
