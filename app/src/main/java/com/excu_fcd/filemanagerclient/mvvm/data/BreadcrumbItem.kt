@@ -29,8 +29,7 @@ data class BreadcrumbItem(val models: List<LocalUriModel>, val selected: Int) {
                 path = path.parentFile ?: break
             }
             trip.reverse()
-            val index = trip.size - 1
-            return Pair(first = trip.map { it.asLocalUriModel() }, second = index)
+            return Pair(first = trip.map { it.asLocalUriModel() }, second = trip.lastIndex)
         }
     }
 

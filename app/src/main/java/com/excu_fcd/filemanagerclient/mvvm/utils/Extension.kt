@@ -7,21 +7,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.MeasureSpec.*
 import android.widget.Toast
+import androidx.appcompat.widget.IconPopupMenu
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.net.toUri
+import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.asFlow
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.excu_fcd.filemanagerclient.R
+import com.excu_fcd.filemanagerclient.mvvm.data.Action
 import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
 import com.excu_fcd.filemanagerclient.mvvm.data.request.Request
+import com.excu_fcd.filemanagerclient.mvvm.feature.worker.Worker
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Failure
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Result
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Success
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -31,6 +36,8 @@ import kotlin.math.max
 
 const val localBookmark = "localBookmark"
 const val remoteBookmark = "remoteBookmark"
+
+internal const val createNewLocalFile: String = "createNewLocalFile"
 
 fun View.makeMeasure(spec: Int, desire: Int): Int {
     return when {
@@ -82,16 +89,22 @@ fun RecyclerView.touchHelper(callback: ItemTouchHelper.Callback) {
     ItemTouchHelper(callback).attachToRecyclerView(this)
 }
 
+
+val Worker<*, *>.workerScope
+    get() = CoroutineScope(IO)
+
 fun Result.isSuccess() = this is Success
 fun Result.isFailure() = this is Failure
 
 fun View.popup(
-    items: List<String> = emptyList(),
+    items: List<Action> = emptyList(),
     listener: PopupMenu.OnMenuItemClickListener = PopupMenu.OnMenuItemClickListener { false },
 ): PopupMenu {
-    val popupMenu = PopupMenu(context, this)
+    val popupMenu = IconPopupMenu(context, this)
     items.forEach {
-        popupMenu.menu.add(it)
+        popupMenu.menu.add(it.title).apply {
+            setIcon(it.icon)
+        }
     }
     popupMenu.setOnMenuItemClickListener(listener)
     return popupMenu
@@ -102,6 +115,20 @@ fun LocalUriModel.getDrawableIcon(): Int =
 
 fun LocalUriModel.getTypedExtension() =
     (if (isDirectory()) "Items: " else "Type: ") + getExtension()
+
+fun Uri.asLocalUriModel() = LocalUriModel(uri = this)
+fun DocumentFile.asLocalUriModel() = LocalUriModel(uri = uri)
+
+fun <T : Any> T.anchoredSnackIt(
+    view: View,
+    anchorView: View = view,
+    duration: Int = Snackbar.LENGTH_SHORT,
+    animationMode: Int = Snackbar.ANIMATION_MODE_SLIDE,
+): T {
+    Snackbar.make(view, "Snack it! ($javaClass) $this", duration).setAnimationMode(animationMode)
+        .setAnchorView(anchorView).show()
+    return this
+}
 
 fun <T : Any> T.snackIt(
     view: View,

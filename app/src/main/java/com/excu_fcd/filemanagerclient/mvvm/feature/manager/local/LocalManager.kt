@@ -13,17 +13,17 @@ import androidx.core.net.toUri
 import androidx.core.os.EnvironmentCompat
 import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
 import com.excu_fcd.filemanagerclient.mvvm.data.request.Request
+import com.excu_fcd.filemanagerclient.mvvm.feature.LocalEventPack
 import com.excu_fcd.filemanagerclient.mvvm.feature.manager.EmployerManager
 import com.excu_fcd.filemanagerclient.mvvm.feature.manager.FileNotificationManager
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.local.CreateWorker
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.local.DeleteWorker
-import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Result
 import com.excu_fcd.filemanagerclient.mvvm.utils.asLocalUriModel
 import java.io.File
 import javax.inject.Inject
 
 class LocalManager @Inject constructor(private val context: Context) :
-    EmployerManager<LocalUriModel>(context = context) {
+    EmployerManager<LocalUriModel, LocalEventPack>(context = context) {
 
     private val notificationManager: FileNotificationManager =
         FileNotificationManager(context = context)
@@ -40,7 +40,7 @@ class LocalManager @Inject constructor(private val context: Context) :
         @RequiresApi(Build.VERSION_CODES.R)
         val MES = Manifest.permission.MANAGE_EXTERNAL_STORAGE
 
-        val SDCARD: File = Environment.getExternalStorageDirectory()
+        val SDCARD: File = Environment.getExternalStorageDirectory().absoluteFile
 
         fun checkState(path: File): Boolean {
             return EnvironmentCompat.getStorageState(path) == Environment.MEDIA_MOUNTED
@@ -55,20 +55,20 @@ class LocalManager @Inject constructor(private val context: Context) :
     @RequiresApi(Build.VERSION_CODES.R)
     fun requireSpecialPermission(): Boolean = !Environment.isExternalStorageManager()
 
-    fun checkPermissions(): Boolean {
-        return ContextCompat.checkSelfPermission(context,
+    fun requirePermissions(): Boolean {
+        return !(ContextCompat.checkSelfPermission(context,
             WES) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(context,
-            RES) == PackageManager.PERMISSION_GRANTED
+            RES) == PackageManager.PERMISSION_GRANTED)
     }
 
-    fun getExternalDirs() = context.getExternalFilesDir(null)!!.listFiles().map {
+    fun getExternalDirs() = context.getExternalFilesDir("")?.listFiles()?.map {
         it.asLocalUriModel()
     }
 
     fun getListFromPath(path: File): List<LocalUriModel> {
         if (!path.exists()) return emptyList()
 
-        if (checkPermissions()) {
+        if (!requirePermissions()) {
             if (checkState(path = path) && path.isDirectory) {
                 return path.listFiles()!!.map { LocalUriModel(uri = it.toUri()) }
             }
@@ -78,33 +78,14 @@ class LocalManager @Inject constructor(private val context: Context) :
     }
 
     fun getListFromPath(model: LocalUriModel): List<LocalUriModel> {
-        val file = model.getFile()
-        if (!file.exists()) return emptyList()
-
-        if (checkPermissions()) {
-            if (checkState(path = file) && file.isDirectory) {
-                return file.listFiles()!!.map { LocalUriModel(uri = it.toUri()) }
-            }
-            return emptyList()
-        }
-        return emptyList()
+        return getListFromPath(model.getFile())
     }
 
     override suspend fun sendRequest(
         request: Request<LocalUriModel>,
-        onResponse: (result: Result) -> Unit,
+        onResponse: (LocalEventPack) -> Unit,
     ) {
-        if (checkPermissions()) return
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-//            if (!checkPermission(MES)) {
-//                for (worker in workers) {
-//                    if (worker.confirm(request = request)) {
-//                        onResponse(worker.work(request = request))
-//                    }
-//                }
-//            }
-//        }
+//        if (checkPermissions()) return
         for (worker in workers) {
             if (worker.confirm(request = request)) {
                 worker.work(request = request, onResponse)

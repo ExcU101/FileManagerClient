@@ -3,7 +3,7 @@ package com.excu_fcd.filemanagerclient.mvvm.ui.adapter
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-abstract class FragmentPageAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+open class FragmentPageAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
     private val fragments: MutableList<Fragment> = mutableListOf()
 

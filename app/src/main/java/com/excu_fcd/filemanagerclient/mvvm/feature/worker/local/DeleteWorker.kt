@@ -3,11 +3,14 @@ package com.excu_fcd.filemanagerclient.mvvm.feature.worker.local
 import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
 import com.excu_fcd.filemanagerclient.mvvm.data.request.Request
 import com.excu_fcd.filemanagerclient.mvvm.data.request.type.DeleteOperationType
+import com.excu_fcd.filemanagerclient.mvvm.feature.LocalEventPack
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.Worker
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Result
+import com.excu_fcd.filemanagerclient.mvvm.utils.isSuccess
+import com.excu_fcd.filemanagerclient.mvvm.utils.logIt
 import java.io.File
 
-class DeleteWorker : Worker<LocalUriModel> {
+class DeleteWorker : Worker<LocalUriModel, LocalEventPack> {
 
     override fun getName(): String {
         return "Delete worker"
@@ -15,15 +18,18 @@ class DeleteWorker : Worker<LocalUriModel> {
 
     override suspend fun work(
         request: Request<LocalUriModel>,
-        onResponse: (result: Result) -> Unit,
-        onFullSuccess: (Result) -> Unit,
+        onItemResult: (LocalEventPack) -> Unit,
     ) {
+        getName().logIt()
         val operations = request.getOperations()
         operations.forEach { operation ->
             if (operation.type is DeleteOperationType) {
                 operation.data.forEach {
-                    request.updateProgress(1)
-                    onResponse(getResult(file = it.getFile()))
+                    val result = getResult(it.getFile())
+                    if (result.isSuccess()) {
+                        request.updateProgress(1)
+                    }
+                    onItemResult(LocalEventPack(operation.type, it, result))
                 }
             }
         }
@@ -31,11 +37,11 @@ class DeleteWorker : Worker<LocalUriModel> {
 
     private fun getResult(file: File): Result {
         if (file.exists()) {
-            if (file.deleteRecursively()) {
+            if (file.deleteRecursively().logIt()) {
                 return Result.success()
             }
             return Result.failure()
         }
-        return Result.failure()
+        return Result.failure().logIt()
     }
 }

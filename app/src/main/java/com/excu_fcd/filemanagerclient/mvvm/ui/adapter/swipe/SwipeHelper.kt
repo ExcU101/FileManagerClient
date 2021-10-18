@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ItemTouchUIUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
-abstract class SwipeHelper<T, VH : RecyclerView.ViewHolder>(adapter: ListAdapter<T, VH>) :
+abstract class SwipeHelper<T, VH : RecyclerView.ViewHolder>(adapter: RecyclerView.Adapter<VH>) :
     ItemTouchHelper.SimpleCallback(0, RIGHT or LEFT),
     ItemTouchUIUtil {
 

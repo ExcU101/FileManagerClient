@@ -3,19 +3,20 @@ package com.excu_fcd.filemanagerclient.mvvm.feature.worker.local
 import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
 import com.excu_fcd.filemanagerclient.mvvm.data.request.Request
 import com.excu_fcd.filemanagerclient.mvvm.data.request.type.CreateOperationType
+import com.excu_fcd.filemanagerclient.mvvm.feature.LocalEventPack
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.Worker
 import com.excu_fcd.filemanagerclient.mvvm.feature.worker.result.Result
 import java.io.File
 
-class CreateWorker : Worker<LocalUriModel> {
+class CreateWorker : Worker<LocalUriModel, LocalEventPack> {
+
     override fun getName(): String {
         return "Create Worker"
     }
 
     override suspend fun work(
         request: Request<LocalUriModel>,
-        onResponse: (result: Result) -> Unit,
-        onFullSuccess: (Result) -> Unit,
+        onItemResult: (LocalEventPack) -> Unit,
     ) {
         val operations = request.getOperations()
         operations.forEach { operation ->
@@ -25,7 +26,7 @@ class CreateWorker : Worker<LocalUriModel> {
                     if (result == Result.success()) {
                         request.updateProgress(1)
                     }
-                    onResponse(result)
+                    onItemResult(LocalEventPack(operation.type, it, result))
                 }
             }
         }

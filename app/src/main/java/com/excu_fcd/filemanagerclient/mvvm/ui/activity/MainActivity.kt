@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.excu_fcd.filemanagerclient.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -13,8 +14,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        binding?.let {
-            setContentView(it.root)
+        binding?.run {
+            setContentView(root)
         }
     }
 

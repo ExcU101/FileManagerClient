@@ -1,13 +1,13 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal()
         google()
         mavenCentral()
+        gradlePluginPortal()
     }
     resolutionStrategy {
         eachPlugin {
             val kotlinVersion = "1.5.31"
-            val androidVersion = "7.1.0-alpha13"
+            val androidVersion = "7.2.0-alpha01"
             val hiltVersion = "2.38.1"
 
             if (requested.id.id.startsWith("org.jetbrains.kotlin")) {
@@ -26,4 +26,4 @@ pluginManagement {
     }
 }
 rootProject.name = "File Manager Client"
-include(":app")
+include(":app", ":core")

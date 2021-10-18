@@ -1,21 +1,28 @@
 package com.excu_fcd.filemanagerclient.mvvm.ui.fragment
 
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import com.excu_fcd.filemanagerclient.R
 import com.excu_fcd.filemanagerclient.databinding.FilemanagerFragmentBinding
+import com.excu_fcd.filemanagerclient.mvvm.data.Action
 import com.excu_fcd.filemanagerclient.mvvm.data.BreadcrumbItem
 import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
-import com.excu_fcd.filemanagerclient.mvvm.data.request.Request
 import com.excu_fcd.filemanagerclient.mvvm.data.request.type.DeleteOperationType
 import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.FolderEmptyState
 import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.state.SortedListState
@@ -24,14 +31,17 @@ import com.excu_fcd.filemanagerclient.mvvm.ui.adapter.listener.OnViewClickListen
 import com.excu_fcd.filemanagerclient.mvvm.ui.view.BreadcrumbLayout
 import com.excu_fcd.filemanagerclient.mvvm.utils.*
 import com.excu_fcd.filemanagerclient.mvvm.viewmodel.LocalViewModel
+import com.excu_fcd.filemanagerclient.mvvm.viewmodel.state.LoadingState
 import com.excu_fcd.filemanagerclient.mvvm.viewmodel.state.ScreenState
 import com.excu_fcd.filemanagerclient.mvvm.viewmodel.state.ViewModelState
+import com.google.android.material.transition.platform.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import java.nio.file.Path
 
 @AndroidEntryPoint
 class FileManagerFragment :
@@ -47,8 +57,24 @@ class FileManagerFragment :
 
     private val requestPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            viewModel.update()
+            viewModel.updateState()
         }
+
+    private val requestProvideData =
+        registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
+            DocumentFile.fromTreeUri(requireContext(), it)?.listFiles()?.forEach { file ->
+                file
+            }
+        }
+
+    init {
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false).apply {
+            duration = 300L
+        }
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true).apply {
+            duration = 300L
+        }
+    }
 
     private val ioScope = CoroutineScope(IO)
 
@@ -57,6 +83,7 @@ class FileManagerFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        if (savedInstanceState != null) return null
         binding = FilemanagerFragmentBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -64,52 +91,86 @@ class FileManagerFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
-        with(binding!!) {
-            list.adapter = adapter
-            list.setHasFixedSize(true)
-            breadcrumbs.setListener(this@FileManagerFragment)
-            refresh.setOnRefreshListener {
-                viewModel.refresh()
-            }
+        arguments?.getParcelable<LocalUriModel>("createNewLocalFile")?.getName()
+            ?.anchoredSnackIt(view)
+        if (savedInstanceState == null) {
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                combine(viewModel.loadingState,
-                    viewModel.refreshState,
-                    viewModel.currentPathFlow,
-                    viewModel.fileListState) { isLoading, isRefreshing, currentPath, listState ->
-                    ScreenState(isLoading, isRefreshing, currentPath, listState)
-                }.flowWithLifecycle(viewLifecycleOwner.lifecycle)
-                    .collect { (isLoading: Boolean, isRefreshing: Boolean, currentPath: LocalUriModel, listState: ViewModelState) ->
-                        breadcrumbs.setItem(BreadcrumbItem.create(currentPath))
-                        refresh.isRefreshing = isRefreshing
-                        if (isLoading) {
-                            progress.oneAlphaAnim()
-                            list.zeroAlphaAnim()
+            binding?.run {
+                list.adapter = adapter
+                list.setHasFixedSize(true)
+                breadcrumbs.setListener(this@FileManagerFragment)
+                refresh.setOnRefreshListener {
+                    viewModel.refreshState()
+                }
+
+                fab.run {
+                    setOnClickListener {
+                        val extras = FragmentNavigatorExtras(
+
+                        )
+                        val bundle = Bundle().apply {
+                            putString("currentPath", viewModel.currentPathFlow.value.getPath())
                         }
-                        if (isRefreshing) {
-                            list.zeroAlphaAnim()
-                        } else {
-                            list.oneAlphaAnim()
-                        }
-                        when (listState) {
-                            is SortedListState -> {
-                                list.oneAlphaAnim()
-                                progress.zeroAlphaAnim()
-                                adapter.setData(listState.list)
-                            }
-                            is FolderEmptyState -> {
-                                list.zeroAlphaAnim()
-                                "Folder is empty".snackIt(view)
-                            }
-                        }
+                        bar.performHide()
+                        breadcrumbs.performHide()
+                        emptyRoot.visibility = GONE
+                        progress.visibility = GONE
+
+
+                        requestProvideData.launch(Uri.fromFile(Environment.getExternalStorageDirectory()))
+
+//                        findNavController().navigate(
+//                            R.id.action_fileManagerFragment_to_fileManagerCreateFragment,
+//                            bundle,
+//                            null,
+//                            extras
+//                        )
                     }
+                }
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    combine(viewModel.loadingState,
+                        viewModel.refreshState,
+                        viewModel.currentPathFlow,
+                        viewModel.dataState) { isLoading, isRefreshing, currentPath, listState ->
+                        ScreenState(isLoading, isRefreshing, currentPath, listState)
+                    }.flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                        .collect { (isLoading: Boolean, isRefreshing: Boolean, currentPath: LocalUriModel, state: ViewModelState) ->
+                            breadcrumbs.setItem(BreadcrumbItem.create(currentPath))
+                            refresh.isRefreshing = isRefreshing
+                            progress.isIndeterminate = isLoading
+
+                            when (state) {
+                                is LoadingState -> {
+
+                                }
+
+                                is FolderEmptyState -> {
+                                    list.zeroAlphaAnim()
+                                    emptyRoot.visibility = VISIBLE
+                                }
+
+                                is SortedListState -> {
+                                    adapter.setData(state.list)
+                                }
+                            }
+                        }
+                }
+            }
+        } else {
+            arguments?.getParcelable<LocalUriModel>("createNewLocalFile")?.let {
+                it.getName().anchoredSnackIt(view)
+                ioScope.launch {
+                    viewModel.requestCreate(it) { packet ->
+                        adapter.onItemResult(packet)
+                    }
+                }
             }
         }
     }
 
     override fun navigateTo(model: LocalUriModel) {
-        viewModel.updateFromFile(file = model.getFile())
-//        binding?.breadcrumbs?.setItem(BreadcrumbItem.create(viewModel.currentPathFlow.value))
+        viewModel.updateState(model = model)
     }
 
     override fun onClick(item: LocalUriModel, view: View) {
@@ -120,26 +181,25 @@ class FileManagerFragment :
                 }
             }
             is AppCompatImageButton -> {
-                view.popup(items = sortedList {
-                    item("Add to bookmark")
-                    item("Copy")
-                    item("Create")
-                    item("Cut")
-                    item("Delete")
-                    item("Paste")
+                view.popup(items = sortedList(compareBy { it.title }) {
+                    item(Action("Add to bookmark", R.drawable.ic_bookmark_24))
+                    item(Action("Copy", R.drawable.ic_copy_24))
+                    item(Action("Create", R.drawable.ic_add_24))
+                    item(Action("Cut", R.drawable.ic_cut_24))
+                    item(Action("Delete", R.drawable.ic_delete_24))
+                    item(Action("Paste", R.drawable.ic_paste_24))
                 }) {
                     when (it.title) {
                         "Delete" -> {
                             ioScope.launch {
-                                val request: Request<LocalUriModel> = request {
-                                    requestName("Delete ${item.getName()}")
-                                    requestId(2)
+                                viewModel.request(request = request {
                                     requestOperations {
-                                        item(element = item, type = DeleteOperationType())
+                                        item(item, DeleteOperationType)
                                     }
-                                }
-                                viewModel.request(request = request) { result ->
-                                    adapter.onResponse(operations = request.getOperations(), result)
+                                    requestId(1)
+                                    requestName("Delete ${item.getName()}")
+                                }) { packet ->
+                                    adapter.onItemResult(packet)
                                 }
                             }
                             true

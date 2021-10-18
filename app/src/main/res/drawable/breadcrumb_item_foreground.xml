@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="#c5c5c5">
+    android:color="@color/breadcrumbRippleColor">
 
     <item
         android:bottom="4dp"
@@ -12,7 +12,7 @@
                 android:left="16dp"
                 android:right="16dp"
                 android:top="8dp" />
-            <solid android:color="@color/white" />
+            <solid android:color="@color/breadcrumbItemBackgroundColor" />
         </shape>
 
     </item>

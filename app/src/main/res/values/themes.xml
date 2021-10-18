@@ -1,6 +1,8 @@
 <resources>
 
     <style name="Theme.FileManageClient" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#000000</item>
+        <item name="colorAccent">#000000</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="titleTextColor">@color/black</item>
         <item name="backgroundColor">#EEEEEE</item>

@@ -1,13 +1,13 @@
 package com.excu_fcd.filemanagerclient.mvvm.ui.view
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.HorizontalScrollView
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.excu_fcd.filemanagerclient.R
 import com.excu_fcd.filemanagerclient.databinding.BreadcrumbItemBinding
@@ -17,22 +17,26 @@ import com.excu_fcd.filemanagerclient.mvvm.utils.atMost
 import com.excu_fcd.filemanagerclient.mvvm.utils.dp
 import com.excu_fcd.filemanagerclient.mvvm.utils.layoutInflater
 import com.excu_fcd.filemanagerclient.mvvm.utils.unspecified
+import java.nio.file.FileSystems
 
 class BreadcrumbLayout : HorizontalScrollView {
 
     private var _item: BreadcrumbItem? = null
     private var _listener: Listener? = null
-    private val items: LinearLayoutCompat by lazy {
+    private val items: LinearLayoutCompat =
         LinearLayoutCompat(context).apply {
             orientation = LinearLayoutCompat.HORIZONTAL
         }
-    }
+
+    private var isShowed = true
+
+    private val backgroundItem = ContextCompat.getDrawable(context,
+        R.drawable.breadcrumb_item_foreground)
 
     private var isLayoutDirty = false
     private var isScrollToSelectedItemPending = false
 
     init {
-        setBackgroundColor(Color.WHITE)
         isHorizontalScrollBarEnabled = false
         setPaddingRelative(0, 0, 0, 0)
         addView(items, LayoutParams(WRAP_CONTENT, MATCH_PARENT))
@@ -67,6 +71,20 @@ class BreadcrumbLayout : HorizontalScrollView {
             scrollToSelected()
             isScrollToSelectedItemPending = false
         }
+    }
+
+    fun performShow() {
+        this.animate().translationY(0F)
+        isShowed = true
+    }
+
+    fun performHide() {
+        this.animate().translationY((-height + -context.dp(16)).toFloat())
+        isShowed = false
+    }
+
+    fun toggle() {
+        if (isShowed) performHide() else performShow()
     }
 
     private fun scrollToSelected() {
@@ -111,20 +129,22 @@ class BreadcrumbLayout : HorizontalScrollView {
     }
 
     private fun bind() {
-        _item?.let {
-            for (i in it.models.indices) {
+        _item?.run {
+            for (i in models.indices) {
                 val binding = items.getChildAt(i).tag as BreadcrumbItemBinding
-                binding.text.text = it.models[i].getName()
-                binding.arrow.isVisible = i != it.models.size - 1
-                binding.root.isActivated = it.selected == i
-                if (it.selected == i) {
-                    binding.text.setBackgroundColor(resources.getColor(R.color.ripple))
-                }
+                binding.text.text = models[i].getName()
+                binding.arrow.isVisible = i != models.size - 1
+                binding.root.isActivated = selected == i
+                binding.text.setTextColor(ContextCompat.getColor(context,
+                    if (selected == i) R.color.breadcrumbSelectedTextColor else R.color.breadcrumbTextColor))
+//                if (it.selected == i) {
+//                    binding.text.setBackgroundColor(resources.getColor(R.color.ripple))
+//                }
                 binding.root.setOnClickListener { _ ->
-                    if (it.selected == i) {
+                    if (selected == i) {
                         scrollToSelected()
                     } else {
-                        _listener?.navigateTo(model = it.models[i])
+                        _listener?.navigateTo(model = models[i])
                     }
                 }
             }

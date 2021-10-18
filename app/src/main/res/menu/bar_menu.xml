@@ -5,12 +5,12 @@
     <item
         android:id="@+id/refresh"
         android:icon="@drawable/ic_refresh_24"
-        app:showAsAction="always"
+        app:showAsAction="never"
         android:title="Refresh" />
     <item
         android:id="@+id/sort"
         android:icon="@drawable/ic_sort_24"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:title="Sort" />
 
 </menu>

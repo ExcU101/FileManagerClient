@@ -2,5 +2,12 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="ripple">#c5c5c5</color>
+    <color name="breadcrumbRippleColor">#4D6200EE</color>
+    <color name="breadcrumbSelectedTextColor">#6200EE</color>
+
+
+    <color name="breadcrumbArrowTint">#000000</color>
+    <color name="breadcrumbContainerColor">#FFFFFF</color>
+    <color name="breadcrumbItemBackgroundColor">#FFFFFF</color>
+    <color name="breadcrumbTextColor">#000000</color>
 </resources>

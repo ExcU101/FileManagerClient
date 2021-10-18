@@ -31,13 +31,13 @@ android {
     }
 
     buildTypes {
-        getByName("debug") {
-            isMinifyEnabled = true
-            isShrinkResources = true
+        debug {
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro")
         }
-        getByName("release") {
+        release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -59,6 +59,7 @@ android {
 }
 
 dependencies {
+    implementation(project(mapOf("path" to ":core")))
     // Lifecycle
     val lifecycleVersion = "2.4.0-beta01"
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
@@ -85,14 +86,6 @@ dependencies {
     val navVersion = "2.3.5"
     implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
-
-
-    // Palette
-    implementation("androidx.palette:palette-ktx:1.0.0")
-
-    // Work manager
-    val workVersion = "2.6.0"
-    implementation("androidx.work:work-runtime-ktx:$workVersion")
 
     // Data store
     val dataVersion = "1.0.0"
