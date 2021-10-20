@@ -3,6 +3,7 @@ package com.excu_fcd.filemanagerclient.mvvm.data.local
 import android.net.Uri
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import androidx.documentfile.provider.DocumentFile
 import com.excu_fcd.filemanagerclient.mvvm.data.UriModel
 import com.excu_fcd.filemanagerclient.mvvm.data.attrs.MimeType
 import com.excu_fcd.filemanagerclient.mvvm.data.attrs.Size
@@ -20,13 +21,13 @@ class LocalUriModel(
     private val fileSystem: FileSystem = LinuxFileSystem(),
 ) : UriModel(uri = uri, fileSystem = fileSystem), Size, MimeType {
 
-    fun getFile() = uri.toFile()
+    fun getFile() = DocumentFile.fromFile(uri.toFile())
 
     @IgnoredOnParcel
     private val _extension = if (getName().contains(".") && !isDirectory()) {
         getName().substring(getName().lastIndexOf(".") + 1)
     } else if (isDirectory()) {
-        getFile().list()?.count().toString()
+        getFile().listFiles().count().toString()
     } else {
         "BIN"
     }
@@ -38,7 +39,7 @@ class LocalUriModel(
 
     fun getParent(): LocalUriModel? = uri.toFile().parentFile?.asLocalUriModel()
 
-    override fun getPath(): String = if (isAbsolute()) getFile().absolutePath else super.getPath()
+    override fun getPath(): String = if (isAbsolute()) getFile().uri.path!! else super.getPath()
 
     @IgnoredOnParcel
     val extendedExtension: String = (if (isDirectory()) "Items: " else "Type: ") + _extension

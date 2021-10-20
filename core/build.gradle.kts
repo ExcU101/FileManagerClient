@@ -43,9 +43,10 @@ android {
 }
 
 dependencies {
-
+    implementation("commons-net:commons-net:20030805.205232")
+    implementation("androidx.documentfile:documentfile:1.1.0-alpha01")
     // Work manager
-    val workVersion = "2.6.0"
+    val workVersion = "2.7.0"
     implementation("androidx.work:work-runtime-ktx:$workVersion")
 
     implementation("androidx.core:core-ktx:1.6.0")

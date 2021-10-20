@@ -9,8 +9,9 @@ import android.os.Environment
 import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
+import androidx.core.net.toFile
 import androidx.core.os.EnvironmentCompat
+import androidx.documentfile.provider.DocumentFile
 import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
 import com.excu_fcd.filemanagerclient.mvvm.data.request.Request
 import com.excu_fcd.filemanagerclient.mvvm.feature.LocalEventPack
@@ -65,12 +66,12 @@ class LocalManager @Inject constructor(private val context: Context) :
         it.asLocalUriModel()
     }
 
-    fun getListFromPath(path: File): List<LocalUriModel> {
+    fun getListFromPath(path: DocumentFile): List<LocalUriModel> {
         if (!path.exists()) return emptyList()
 
         if (!requirePermissions()) {
-            if (checkState(path = path) && path.isDirectory) {
-                return path.listFiles()!!.map { LocalUriModel(uri = it.toUri()) }
+            if (checkState(path = path.uri.toFile()) && path.isDirectory) {
+                return path.listFiles().map { LocalUriModel(uri = it.uri) }
             }
             return emptyList()
         }

@@ -1,12 +1,12 @@
-package com.excu_fcd.core.data
+package com.excu_fcd.core.data.model
 
 import android.net.Uri
 import android.os.Parcelable
-import com.excu_fcd.core.data.common.AbstractListPath
+import com.excu_fcd.core.data.model.common.AbstractListPath
 
 interface Path<P : Path<P>> : Comparable<P>, Iterable<P>, Parcelable {
 
-    fun getPathSystem(): FileSystem
+    fun getPathSystem(): FileSystem<P>
 
     fun getPartName(): String
 
@@ -21,6 +21,8 @@ interface Path<P : Path<P>> : Comparable<P>, Iterable<P>, Parcelable {
     fun subPath(startIndex: Int, endIndex: Int): P
 
     fun endsWith(other: Path<P>): Boolean
+
+    fun isAbsolute(): Boolean = false
 
     fun endsWith(other: String): Boolean
 

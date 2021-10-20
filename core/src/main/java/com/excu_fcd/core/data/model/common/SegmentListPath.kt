@@ -1,4 +1,4 @@
-package com.excu_fcd.core.data.common
+package com.excu_fcd.core.data.model.common
 
 abstract class SegmentListPath<P : SegmentListPath<P>> : AbstractListPath<P>() {
 

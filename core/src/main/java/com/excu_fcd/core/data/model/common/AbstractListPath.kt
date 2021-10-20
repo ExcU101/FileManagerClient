@@ -1,6 +1,6 @@
-package com.excu_fcd.core.data.common
+package com.excu_fcd.core.data.model.common
 
-import com.excu_fcd.core.data.Path
+import com.excu_fcd.core.data.model.Path
 
 abstract class AbstractListPath<P : AbstractListPath<P>> : Path<P> {
 
@@ -14,8 +14,11 @@ abstract class AbstractListPath<P : AbstractListPath<P>> : Path<P> {
     }
 
     override fun resolve(path: P): P {
+        if (path.isAbsolute() || listPath.isEmpty()) return path
         return path
     }
+
+    protected abstract fun createNewPath(isAbsolute: Boolean = true, segments: List<P>): P
 
     override fun subPath(startIndex: Int, endIndex: Int): P {
         return listPath.removeAt(index = endIndex)

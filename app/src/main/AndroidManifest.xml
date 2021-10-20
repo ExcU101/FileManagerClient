@@ -31,12 +31,6 @@
         </activity>
 
         <provider
-            android:name=".mvvm.feature.manager.local.LocalContentProvider"
-            android:authorities="@{applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true" />
-
-        <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"

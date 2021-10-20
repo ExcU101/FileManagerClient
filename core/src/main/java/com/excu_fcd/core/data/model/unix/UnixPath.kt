@@ -1,9 +1,9 @@
-package com.excu_fcd.core.data.unix
+package com.excu_fcd.core.data.model.unix
 
 import android.net.Uri
-import com.excu_fcd.core.data.FileSystem
-import com.excu_fcd.core.data.Path
-import com.excu_fcd.core.data.common.SegmentListPath
+import com.excu_fcd.core.data.model.FileSystem
+import com.excu_fcd.core.data.model.Path
+import com.excu_fcd.core.data.model.common.SegmentListPath
 import kotlinx.parcelize.Parcelize
 
 
@@ -43,5 +43,9 @@ class UnixPath : SegmentListPath<UnixPath>() {
 
     override fun endsWith(other: String): Boolean {
         return false
+    }
+
+    override fun createNewPath(isAbsolute: Boolean, segments: List<UnixPath>): UnixPath {
+        return segments.first()
     }
 }

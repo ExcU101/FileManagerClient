@@ -61,7 +61,7 @@ android {
 dependencies {
     implementation(project(mapOf("path" to ":core")))
     // Lifecycle
-    val lifecycleVersion = "2.4.0-beta01"
+    val lifecycleVersion = "2.4.0-rc01"
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
@@ -75,7 +75,7 @@ dependencies {
     kapt("androidx.room:room-compiler:$roomVersion")
 
     // Hilt
-    val hiltVersion = "2.38.1"
+    val hiltVersion = "2.39.1"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
     implementation("androidx.hilt:hilt-work:1.0.0")

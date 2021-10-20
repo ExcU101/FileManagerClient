@@ -1,4 +1,4 @@
-package com.excu_fcd.core.data
+package com.excu_fcd.core.data.model
 
 interface FileSystem<P : Path<P>> {
 
