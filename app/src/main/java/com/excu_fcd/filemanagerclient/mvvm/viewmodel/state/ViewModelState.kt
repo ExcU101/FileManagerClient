@@ -6,6 +6,10 @@ interface ViewModelState {
         fun empty(): ViewModelState = object : ViewModelState {
 
         }
+
+        fun loading() = LoadingState
+
+        fun refresh(isRefreshing: Boolean = false) = RefreshState(isRefreshing = isRefreshing)
     }
 
 }

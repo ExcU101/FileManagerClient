@@ -3,7 +3,6 @@ package com.excu_fcd.filemanagerclient.mvvm.ui.adapter
 import androidx.recyclerview.widget.AdapterListUpdateCallback
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch

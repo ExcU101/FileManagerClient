@@ -1,38 +1,37 @@
 package com.excu_fcd.filemanagerclient.mvvm.ui.fragment
 
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.documentfile.provider.DocumentFile
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.FragmentNavigatorExtras
+import com.excu_fcd.core.data.model.DocumentModel
+import com.excu_fcd.core.data.request.operation.Operation
+import com.excu_fcd.core.data.request.operation.OperationDataEmptyReason
+import com.excu_fcd.core.data.request.operation.operation
+import com.excu_fcd.core.data.request.operation.reason.Reason
+import com.excu_fcd.core.data.request.operation.reason.TextualReason
+import com.excu_fcd.core.data.request.priority.Priority
+import com.excu_fcd.core.data.request.requestBuilder
+import com.excu_fcd.core.provider.job.Job
 import com.excu_fcd.filemanagerclient.R
 import com.excu_fcd.filemanagerclient.databinding.FilemanagerFragmentBinding
 import com.excu_fcd.filemanagerclient.mvvm.data.Action
 import com.excu_fcd.filemanagerclient.mvvm.data.BreadcrumbItem
-import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
-import com.excu_fcd.filemanagerclient.mvvm.data.request.type.DeleteOperationType
-import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.FolderEmptyState
-import com.excu_fcd.filemanagerclient.mvvm.feature.manager.local.state.SortedListState
 import com.excu_fcd.filemanagerclient.mvvm.ui.adapter.LocalAdapter
 import com.excu_fcd.filemanagerclient.mvvm.ui.adapter.listener.OnViewClickListener
 import com.excu_fcd.filemanagerclient.mvvm.ui.view.BreadcrumbLayout
 import com.excu_fcd.filemanagerclient.mvvm.utils.*
-import com.excu_fcd.filemanagerclient.mvvm.viewmodel.LocalViewModel
-import com.excu_fcd.filemanagerclient.mvvm.viewmodel.state.LoadingState
-import com.excu_fcd.filemanagerclient.mvvm.viewmodel.state.ScreenState
+import com.excu_fcd.filemanagerclient.mvvm.viewmodel.DocumentViewModel
+import com.excu_fcd.filemanagerclient.mvvm.viewmodel.state.ListState
 import com.excu_fcd.filemanagerclient.mvvm.viewmodel.state.ViewModelState
 import com.google.android.material.transition.platform.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,30 +40,27 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import java.nio.file.Path
 
 @AndroidEntryPoint
 class FileManagerFragment :
     Fragment(R.layout.filemanager_fragment),
-    OnViewClickListener<LocalUriModel>, BreadcrumbLayout.Listener {
+    OnViewClickListener<DocumentModel>, BreadcrumbLayout.Listener {
 
     private var binding: FilemanagerFragmentBinding? = null
 
-    private val viewModel: LocalViewModel by hiltNavGraphViewModels<LocalViewModel>(R.id.app_navigation)
+    private val viewModel: DocumentViewModel by hiltNavGraphViewModels(R.id.app_navigation)
     private val adapter = LocalAdapter().apply {
         listener = this@FileManagerFragment
     }
 
     private val requestPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            viewModel.updateState()
+
         }
 
     private val requestProvideData =
         registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
-            DocumentFile.fromTreeUri(requireContext(), it)?.listFiles()?.forEach { file ->
-                file
-            }
+
         }
 
     init {
@@ -91,7 +87,7 @@ class FileManagerFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
-        arguments?.getParcelable<LocalUriModel>("createNewLocalFile")?.getName()
+        arguments?.getParcelable<DocumentModel>("createNewLocalFile")?.getName()
             ?.anchoredSnackIt(view)
         if (savedInstanceState == null) {
 
@@ -99,81 +95,39 @@ class FileManagerFragment :
                 list.adapter = adapter
                 list.setHasFixedSize(true)
                 breadcrumbs.setListener(this@FileManagerFragment)
+                progress.hide()
                 refresh.setOnRefreshListener {
-                    viewModel.refreshState()
+
                 }
 
-                fab.run {
-                    setOnClickListener {
-                        val extras = FragmentNavigatorExtras(
-
-                        )
-                        val bundle = Bundle().apply {
-                            putString("currentPath", viewModel.currentPathFlow.value.getPath())
-                        }
-                        bar.performHide()
-                        breadcrumbs.performHide()
-                        emptyRoot.visibility = GONE
-                        progress.visibility = GONE
-
-
-                        requestProvideData.launch(Uri.fromFile(Environment.getExternalStorageDirectory()))
-
-//                        findNavController().navigate(
-//                            R.id.action_fileManagerFragment_to_fileManagerCreateFragment,
-//                            bundle,
-//                            null,
-//                            extras
-//                        )
-                    }
+                fab.setOnClickListener {
+                    requestPermission
+                    requestProvideData.launch(Environment.getDataDirectory().toUri())
                 }
 
-                viewLifecycleOwner.lifecycleScope.launch {
-                    combine(viewModel.loadingState,
-                        viewModel.refreshState,
-                        viewModel.currentPathFlow,
-                        viewModel.dataState) { isLoading, isRefreshing, currentPath, listState ->
-                        ScreenState(isLoading, isRefreshing, currentPath, listState)
-                    }.flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-                        .collect { (isLoading: Boolean, isRefreshing: Boolean, currentPath: LocalUriModel, state: ViewModelState) ->
+                lifecycleScope.launch {
+                    combine(viewModel.stateFlow, viewModel.currentPathFlow) { t1, t2 ->
+                        Pair(t1, t2)
+                    }.flowWithLifecycle(lifecycle = lifecycle)
+                        .collect { (state: ViewModelState, currentPath: DocumentModel) ->
                             breadcrumbs.setItem(BreadcrumbItem.create(currentPath))
-                            refresh.isRefreshing = isRefreshing
-                            progress.isIndeterminate = isLoading
-
-                            when (state) {
-                                is LoadingState -> {
-
+                            if (state is ListState) {
+                                state.list.forEach {
+                                    it.getName().logIt()
                                 }
-
-                                is FolderEmptyState -> {
-                                    list.zeroAlphaAnim()
-                                    emptyRoot.visibility = VISIBLE
-                                }
-
-                                is SortedListState -> {
-                                    adapter.setData(state.list)
-                                }
+                                adapter.setData(state.list)
                             }
                         }
-                }
-            }
-        } else {
-            arguments?.getParcelable<LocalUriModel>("createNewLocalFile")?.let {
-                it.getName().anchoredSnackIt(view)
-                ioScope.launch {
-                    viewModel.requestCreate(it) { packet ->
-                        adapter.onItemResult(packet)
-                    }
                 }
             }
         }
     }
 
-    override fun navigateTo(model: LocalUriModel) {
-        viewModel.updateState(model = model)
+    override fun navigateTo(model: DocumentModel) {
+        viewModel.updateState(path = model)
     }
 
-    override fun onClick(item: LocalUriModel, view: View) {
+    override fun onClick(item: DocumentModel, view: View) {
         when (view) {
             is LinearLayoutCompat -> {
                 if (item.isDirectory()) {
@@ -192,15 +146,67 @@ class FileManagerFragment :
                     when (it.title) {
                         "Delete" -> {
                             ioScope.launch {
-                                viewModel.request(request = request {
+                                viewModel.request(request = requestBuilder {
                                     requestOperations {
-                                        item(item, DeleteOperationType)
+                                        operation {
+                                            data {
+                                                item(item)
+                                            }
+                                            priority(Priority.middle())
+                                            type(Operation.Type.delete())
+                                        }
+                                        requestPriority(Priority.middle())
+                                        requestName("Delete ${item.getName()}")
                                     }
-                                    requestId(1)
-                                    requestName("Delete ${item.getName()}")
-                                }) { packet ->
-                                    adapter.onItemResult(packet)
-                                }
+                                }, object : Job.OperationCallback {
+                                    override fun onOperationTypeGranted(operation: Operation) {
+
+                                    }
+
+                                    override fun onOperationTypeDenied(
+                                        operation: Operation,
+                                        reason: Reason,
+                                    ) {
+                                        when (reason) {
+                                            is TextualReason -> {
+                                                reason.text.logIt()
+                                            }
+                                            is OperationDataEmptyReason -> {
+                                                reason.logIt()
+                                            }
+                                        }
+                                        "Denied ${operation.type}".logIt()
+                                    }
+
+                                }, object : Job.ItemOperationCallback {
+                                    override fun onOperationWork(operation: Operation) {
+
+                                    }
+
+                                    override fun onItemOperationSuccess(
+                                        model: DocumentModel,
+                                        reason: Reason,
+                                    ) {
+                                        adapter.removeItem(model)
+                                        when (reason) {
+                                            is TextualReason -> {
+                                                reason.text.logIt()
+                                            }
+                                        }
+                                    }
+
+                                    override fun onItemOperationFailure(
+                                        model: DocumentModel,
+                                        reason: Reason,
+                                    ) {
+                                        when (reason) {
+                                            is TextualReason -> {
+                                                reason.text.logIt()
+                                            }
+                                        }
+                                    }
+
+                                })
                             }
                             true
                         }

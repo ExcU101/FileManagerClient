@@ -1,6 +1,7 @@
 package com.excu_fcd.filemanagerclient.mvvm.ui.view
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -9,15 +10,14 @@ import android.widget.HorizontalScrollView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import com.excu_fcd.core.data.model.DocumentModel
 import com.excu_fcd.filemanagerclient.R
 import com.excu_fcd.filemanagerclient.databinding.BreadcrumbItemBinding
 import com.excu_fcd.filemanagerclient.mvvm.data.BreadcrumbItem
-import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
 import com.excu_fcd.filemanagerclient.mvvm.utils.atMost
 import com.excu_fcd.filemanagerclient.mvvm.utils.dp
 import com.excu_fcd.filemanagerclient.mvvm.utils.layoutInflater
 import com.excu_fcd.filemanagerclient.mvvm.utils.unspecified
-import java.nio.file.FileSystems
 
 class BreadcrumbLayout : HorizontalScrollView {
 
@@ -56,6 +56,7 @@ class BreadcrumbLayout : HorizontalScrollView {
             }
             height = MeasureSpec.makeMeasureSpec(desireHeight, MeasureSpec.EXACTLY)
         }
+//        setMeasuredDimension(widthMeasureSpec, height)
         super.onMeasure(widthMeasureSpec, height)
     }
 
@@ -133,7 +134,7 @@ class BreadcrumbLayout : HorizontalScrollView {
             for (i in models.indices) {
                 val binding = items.getChildAt(i).tag as BreadcrumbItemBinding
                 binding.text.text = models[i].getName()
-                binding.arrow.isVisible = i != models.size - 1
+                binding.arrow.isVisible = i != models.lastIndex
                 binding.root.isActivated = selected == i
                 binding.text.setTextColor(ContextCompat.getColor(context,
                     if (selected == i) R.color.breadcrumbSelectedTextColor else R.color.breadcrumbTextColor))
@@ -156,6 +157,6 @@ class BreadcrumbLayout : HorizontalScrollView {
     }
 
     interface Listener {
-        fun navigateTo(model: LocalUriModel)
+        fun navigateTo(model: DocumentModel)
     }
 }

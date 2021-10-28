@@ -1,36 +1,27 @@
 package com.excu_fcd.filemanagerclient.mvvm.data
 
-import androidx.documentfile.provider.DocumentFile
-import com.excu_fcd.filemanagerclient.mvvm.data.local.LocalUriModel
-import com.excu_fcd.filemanagerclient.mvvm.utils.asLocalUriModel
-import java.io.File
+import com.excu_fcd.core.data.model.DocumentModel
+import com.excu_fcd.core.extensions.asDocumentModel
 
-data class BreadcrumbItem(val models: List<LocalUriModel>, val selected: Int) {
+data class BreadcrumbItem(val models: List<DocumentModel>, val selected: Int) {
 
     companion object {
-        fun create(originalPath: LocalUriModel): BreadcrumbItem {
+        fun create(originalPath: DocumentModel): BreadcrumbItem {
             val pair =
                 createPathList(originalPath = originalPath)
 
             return BreadcrumbItem(models = pair.first, selected = pair.second)
         }
 
-        fun create(originalPath: File): BreadcrumbItem {
-            val pair =
-                createPathList(originalPath = originalPath.asLocalUriModel())
-
-            return BreadcrumbItem(models = pair.first, selected = pair.second)
-        }
-
-        private fun createPathList(originalPath: LocalUriModel): Pair<List<LocalUriModel>, Int> {
-            var path = originalPath.getFile()
-            val trip = mutableListOf<DocumentFile>()
+        private fun createPathList(originalPath: DocumentModel): Pair<List<DocumentModel>, Int> {
+            var path = originalPath
+            val trip = mutableListOf<DocumentModel>()
             while (true) {
                 trip.add(element = path)
-                path = path.parentFile ?: break
+                path = path.getParent()?.asDocumentModel() ?: break
             }
             trip.reverse()
-            return Pair(first = trip.map { it.asLocalUriModel() }, second = trip.lastIndex)
+            return Pair(first = trip, second = trip.lastIndex)
         }
     }
 
