@@ -16,13 +16,14 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.FileManageClient">
         <activity
             android:name="com.excu_fcd.filemanagerclient.mvvm.ui.activity.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.FileManageClient">
+            android:theme="@style/Theme.FileManageClient"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

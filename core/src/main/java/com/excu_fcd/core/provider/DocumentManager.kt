@@ -16,6 +16,9 @@ import com.excu_fcd.core.extensions.isGranted
 import com.excu_fcd.core.provider.job.CreateJob
 import com.excu_fcd.core.provider.job.DeleteJob
 import com.excu_fcd.core.provider.job.Job
+import com.excu_fcd.core.provider.job.RenameJob
+import com.excu_fcd.core.provider.job.callback.ModelJobCallback
+import com.excu_fcd.core.provider.job.callback.OperationJobCallback
 import javax.inject.Inject
 
 class DocumentManager @Inject constructor(
@@ -25,7 +28,8 @@ class DocumentManager @Inject constructor(
 
     private var jobs = mutableListOf(
         DeleteJob,
-        CreateJob
+        CreateJob,
+        RenameJob
     )
 
     private var needToRequestSpecialPermission = false
@@ -79,8 +83,8 @@ class DocumentManager @Inject constructor(
 
     override suspend fun pullRequest(
         request: Request,
-        operationCallback: Job.OperationCallback?,
-        itemOperationCallback: Job.ItemOperationCallback?,
+        operationCallback: OperationJobCallback?,
+        itemOperationCallback: ModelJobCallback?,
     ) {
         for (operation in request.getOperationData()) {
             for (job in jobs) {

@@ -7,32 +7,48 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.MeasureSpec.*
 import android.widget.Toast
+import androidx.annotation.MenuRes
 import androidx.appcompat.widget.IconPopupMenu
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.net.toUri
-import androidx.documentfile.provider.DocumentFile
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.asFlow
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.excu_fcd.core.data.model.DocumentModel
-import com.excu_fcd.filemanagerclient.R
 import com.excu_fcd.filemanagerclient.mvvm.data.Action
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.io.File
 import kotlin.math.max
 
 
 const val localBookmark = "localBookmark"
 const val remoteBookmark = "remoteBookmark"
 
+internal const val CREATE_KEY = "CREATE"
+
 internal const val createNewLocalFile: String = "createNewLocalFile"
+
+
+fun <T> NavController.getLiveData(key: String) =
+    currentBackStackEntry?.savedStateHandle?.getLiveData<T>(key)
+
+fun <T> NavController.set(key: String, value: T) =
+    currentBackStackEntry?.savedStateHandle?.set(key, value)
+
+fun <T> NavController.get(key: String, value: T) =
+    currentBackStackEntry?.savedStateHandle?.get<T>(key)
 
 fun View.makeMeasure(spec: Int, desire: Int): Int {
     return when {
@@ -48,8 +64,21 @@ fun View.makeMeasure(spec: Int, desire: Int): Int {
     }
 }
 
+fun NavigationView.replaceMenu(@MenuRes id: Int) {
+    menu.clear()
+    inflateMenu(id)
+}
+
+fun CircularProgressIndicator.toggle(isLoading: Boolean) {
+    if (isLoading) show() else hide()
+}
+
 fun Context.dp(value: Int): Int {
     return (resources.displayMetrics.density * value).toInt()
+}
+
+fun Fragment.finish() {
+    requireActivity().finish()
 }
 
 fun Int.getMode() = View.MeasureSpec.getMode(this)
@@ -100,19 +129,41 @@ fun <T : Any> T.anchoredSnackIt(
     view: View,
     anchorView: View = view,
     duration: Int = Snackbar.LENGTH_SHORT,
-    animationMode: Int = Snackbar.ANIMATION_MODE_SLIDE,
+    animationMode: Int = Snackbar.ANIMATION_MODE_FADE,
 ): T {
-    Snackbar.make(view, "Snack it! ($javaClass) $this", duration).setAnimationMode(animationMode)
+    Snackbar.make(view, "$this", duration).setAnimationMode(animationMode)
         .setAnchorView(anchorView).show()
     return this
 }
+
+fun BottomSheetBehavior<*>.hide() {
+    state = STATE_HIDDEN
+}
+
+fun BottomSheetBehavior<*>.show() {
+    state = STATE_EXPANDED
+}
+
+fun BottomSheetBehavior<*>.toggle() {
+    if (state == STATE_EXPANDED) {
+        return hide()
+    }
+    return show()
+}
+
+fun topShapeModel(context: Context, value: Int) =
+    ShapeAppearanceModel.builder().setTopRightCornerSize(context.dp(value).toFloat())
+        .setTopLeftCornerSize(context.dp(value).toFloat()).build()
+
+fun BottomSheetBehavior<*>.isExpanded() = state == STATE_EXPANDED
+fun BottomSheetBehavior<*>.isHidden() = state == STATE_HIDDEN
 
 fun <T : Any> T.snackIt(
     view: View,
     duration: Int = Snackbar.LENGTH_SHORT,
     animationMode: Int = Snackbar.ANIMATION_MODE_SLIDE,
 ): T {
-    Snackbar.make(view, "Snack it! ($javaClass) $this", duration).setAnimationMode(animationMode)
+    Snackbar.make(view, "$this", duration).setAnimationMode(animationMode)
         .show()
     return this
 }

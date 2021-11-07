@@ -1,8 +1,16 @@
 package com.excu_fcd.core.data.request
 
+import com.excu_fcd.core.data.model.DocumentModel
 import com.excu_fcd.core.data.request.operation.Operation
+import com.excu_fcd.core.data.request.operation.operation
+import com.excu_fcd.core.data.request.operation.type.CopyType
+import com.excu_fcd.core.data.request.operation.type.CreateType
+import com.excu_fcd.core.data.request.operation.type.CutType
+import com.excu_fcd.core.data.request.operation.type.DeleteType
 import com.excu_fcd.core.data.request.priority.Priority
 import com.excu_fcd.core.data.request.priority.Priority.Companion.empty
+import com.excu_fcd.core.data.request.priority.Priority.Companion.middle
+import com.excu_fcd.core.extensions.items
 import com.excu_fcd.core.extensions.requestBuilderName
 import com.excu_fcd.core.extensions.requestBuilderPriority
 

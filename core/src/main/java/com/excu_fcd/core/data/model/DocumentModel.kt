@@ -10,12 +10,18 @@ import kotlinx.parcelize.RawValue
 
 @Parcelize
 class DocumentModel(
-    private val file: @RawValue DocumentFile = DocumentFile.fromFile(Environment.getExternalStoragePublicDirectory(
-        "")),
+    private val file: @RawValue DocumentFile = DocumentFile.fromFile(
+        Environment.getExternalStoragePublicDirectory(
+            ""
+        )
+    ),
     private val isMustBeDirectory: Boolean = false,
-) : Parcelable {
+) : Parcelable, Comparable<DocumentModel> {
+    override fun compareTo(other: DocumentModel): Int {
+        return getName().length - other.getName().length
+    }
 
-    fun exists() = file.exists()
+    fun exists(): Boolean = file.exists()
 
     private fun delete(file: DocumentFile): Boolean {
         if (isDirectory()) {
@@ -26,13 +32,19 @@ class DocumentModel(
         return file.delete()
     }
 
-    /*
-     * Create file or directory inside this model (if is directroy)
+    fun rename(model: DocumentModel): Boolean = file.renameTo(model.getName())
+
+    /**
+     * Create file or directory inside this model (if is directory)
      */
-    fun createInside(isDir: Boolean = false): Boolean {
+    fun createInside(isDir: Boolean = false, model: DocumentModel): Boolean {
         return if (isDirectory()) {
-            (if (isDir) file.createDirectory(getName()) else file.createFile(getMimeType(),
-                getName()))?.exists() ?: false
+            val newModel = if (isDir) file.createDirectory(model.getName()) else file.createFile(
+                model.getMimeType(),
+                model.getName()
+            )
+
+            newModel != null
         } else {
             false
         }
@@ -58,21 +70,52 @@ class DocumentModel(
         "Empty name"
     }
 
+    fun getPathParent() = getPath().substring(0, getPath().lastIndexOf("/"))
+
+    fun getParentModel() = getParent()?.asDocumentModel()
+
     fun getParent() = file.parentFile
 
     fun getMimeType(): String {
-        return if (getName().contains(".") && getName().startsWith(".")) {
-            executeMimeType()
+        return if (getName().contains(".") && !getName().startsWith(".")) {
+            val mimeType = executeMimeType()
+            if (mimeType.length > 8) {
+                ""
+            } else {
+                mimeType
+            }
+        } else if (isDirectory()) {
+
+            /** Cause {@link DocumentFile} can be casted to {@link SingleDocumentFile}
+             * which {@throws UnsupportedOperationException}
+             * when you trying call {@link #listFiles()} method
+             */
+            try {
+                val count = file.listFiles().count()
+                if (count <= 0) {
+                    "Empty folder"
+                } else {
+                    count.toString()
+                }
+            } catch (e: UnsupportedOperationException) {
+                "Empty folder"
+            }
         } else {
-            file.listFiles().count().toString()
+            ""
         }
     }
+
+    fun supports() = false
 
     fun list(): List<DocumentModel>? =
         if (!isDirectory()) null else file.listFiles().map { it.asDocumentModel() }
 
 
     fun isDirectory(): Boolean = file.isDirectory || isMustBeDirectory
+
+    fun isNotDirectory(): Boolean = !isDirectory()
+
+    fun notExists(): Boolean = !exists()
 
     private fun hasSeparator(): Boolean = getPath().contains("/")
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/fileManager"
+        android:title="File Manager"/>
+
+    <item
+        android:id="@+id/taskManager"
+        android:title="Task Manager (Planned)"/>
+
+</menu>

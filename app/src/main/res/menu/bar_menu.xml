@@ -3,14 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/backParent"
+        android:title="Parent"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/refresh"
-        android:icon="@drawable/ic_refresh_24"
-        app:showAsAction="never"
-        android:title="Refresh" />
+        android:title="Refresh"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/sourceMode"
+        android:icon="@drawable/ic_source_24"
+        android:title="Change mode"
+        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/sort"
         android:icon="@drawable/ic_sort_24"
-        app:showAsAction="ifRoom"
-        android:title="Sort" />
+        android:title="Sort"
+        app:showAsAction="ifRoom" />
 
 </menu>

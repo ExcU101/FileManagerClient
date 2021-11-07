@@ -3,24 +3,55 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Igor/.gradle/caches/transforms-3/98043a1a1d0fa7ab49611314b7076b6c/transformed/core-1.7.0/res/menu/example_menu2.xml" value="0.365625" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManageClient/app/src/main/res/layout/activity_main.xml" value="0.14722222222222223" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.38177083333333334" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable-v24/menu_close_anim.xml" value="0.2328125" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/anim_close_to_menu.xml" value="0.38177083333333334" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/anim_menu_to_close.xml" value="0.38177083333333334" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/bottom_background_shape.xml" value="0.38177083333333334" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/breadcrumb_item_foreground.xml" value="0.134" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/close_menu_anim.xml" value="0.38177083333333334" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/drawer.xml" value="0.38177083333333334" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/drawer_close.xml" value="0.38177083333333334" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/drawer_open.xml" value="0.38177083333333334" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_add_24.xml" value="0.1405" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_close_24.xml" value="0.38177083333333334" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_copy_24.xml" value="0.171" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_create_24.xml" value="0.171" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_done_24.xml" value="0.38177083333333334" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_file_24.xml" value="0.171" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_folder_24.xml" value="0.171" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_launcher.xml" value="2.290625" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_launcher_background.xml" value="0.38177083333333334" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_menu_24.xml" value="0.102" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_more_24.xml" value="0.1" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_refresh_24.xml" value="0.1" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_settings_24.xml" value="0.38177083333333334" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout-v23/item_model_layout.xml" value="0.34923076923076923" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/breadcrumb_item.xml" value="0.3546875" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/create_now_fragment.xml" value="0.22" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/dialog_create_layout.xml" value="0.24537037037037038" />
-        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/filemanager_create_fragment.xml" value="0.25" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/dialog_rename.xml" value="0.3536458333333333" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/filemanager_create_fragment.xml" value="0.26766304347826086" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/filemanager_create_local_fragment.xml" value="0.21296296296296297" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/filemanager_fragment.xml" value="0.34923076923076923" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/filemanager_pager_fragment.xml" value="0.3546875" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/item_model_layout.xml" value="0.25" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/loved_pathes.xml" value="0.3446557971014493" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/nav_header.xml" value="0.365625" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/navigation_drawer.xml" value="0.3536458333333333" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/navigation_layout.xml" value="0.3596014492753623" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/operations_layout.xml" value="0.3446557971014493" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/menu/bar_menu.xml" value="0.21296296296296297" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/menu/create_menu.xml" value="0.365625" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/menu/default_operations.xml" value="0.365625" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/menu/loved_pathes.xml" value="0.365625" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/menu/main_menu.xml" value="0.365625" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/menu/navigation_menu.xml" value="0.365625" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.22083333333333333" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.38177083333333334" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/xml/paths.xml" value="0.3546875" />
       </map>
     </option>

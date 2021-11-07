@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:background="@color/bottomCreateBackground"
     tools:context=".mvvm.ui.fragment.FileManagerFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -17,8 +17,7 @@
         <com.excu_fcd.filemanagerclient.mvvm.ui.view.BreadcrumbLayout
             android:id="@+id/breadcrumbs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/breadcrumbContainerColor" />
+            android:layout_height="wrap_content" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -34,57 +33,11 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingBottom="94dp"
+            android:nestedScrollingEnabled="true"
             android:transitionGroup="true"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/emptyRoot"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:srcCompat="@drawable/ic_folder_24"
-            app:tint="@color/black" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="0dp"
-            android:text="Folder is empty"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:fabAlignmentMode="center"
-        app:fabCradleMargin="8dp"
-        app:fabCradleRoundedCornerRadius="0dp"
-        app:hideOnScroll="true"
-        app:menu="@menu/bar_menu"
-        app:navigationIcon="@drawable/ic_menu_24" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        app:backgroundTint="@color/white"
-        app:layout_anchor="@id/bar"
-        app:srcCompat="@drawable/ic_add_24"
-        app:tint="@color/black" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/permsRoot"
@@ -127,7 +80,7 @@
         android:layout_gravity="center"
         android:backgroundTint="#000000"
         android:indeterminate="true"
-        android:progressTint="#000000"
-        app:indicatorColor="#000000" />
+        android:progressTint="@color/colorAccent"
+        app:indicatorColor="@color/colorAccent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

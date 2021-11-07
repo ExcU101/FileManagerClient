@@ -56,6 +56,22 @@ abstract class AbsAdapter<T, VH : RecyclerView.ViewHolder>(
         }
     }
 
+    fun changeItem(index: Int, new: T) {
+        if (index < currentList.size && index >= 0) {
+            currentList[index] = new
+            notifyItemChanged(index)
+        }
+    }
+
+    fun changeItem(old: T, new: T) {
+        val index = getIndex(old)
+
+        if (index < currentList.size && index >= 0) {
+            currentList[index] = new
+            notifyItemChanged(index)
+        }
+    }
+
     private fun getIndex(item: T) = currentList.indexOf(item)
 
 }

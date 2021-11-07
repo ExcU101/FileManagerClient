@@ -1,0 +1,48 @@
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="vector"
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24"
+            android:tint="?attr/colorControlNormal">
+            <group
+                android:name="menugroup"
+                android:pivotX="12"
+                android:pivotY="12">
+                <path
+                    android:name="menu"
+                    android:pathData="M 19 5 L 5 19 M 19 19 L 5 5 M 19 5 L 5 19"
+                    android:strokeColor="#000"
+                    android:strokeWidth="2"
+                    android:strokeLineCap="round"
+                    android:strokeLineJoin="round"/>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="menu">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:duration="100"
+                android:valueFrom="M 19 5 L 5 19 M 19 19 L 5 5 M 19 5 L 5 19"
+                android:valueTo="M 21 7 L 3 7 M 21 12 L 3 12 M 21 17 L 3 17"
+                android:valueType="pathType"
+                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+    <target android:name="menugroup">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="rotation"
+                android:duration="100"
+                android:valueFrom="0"
+                android:valueTo="180"
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+</animated-vector>

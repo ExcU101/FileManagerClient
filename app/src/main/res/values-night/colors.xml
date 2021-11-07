@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorAccent">#7744FF</color>
+
+    <color name="breadcrumbRippleColor">#4D7744FF</color>
+    <color name="breadcrumbSelectedTextColor">#7744FF</color>
+
+    <color name="fabColor">#7744FF</color>
+    <color name="fabIconColor">#FFFFFF</color>
+
+    <color name="bottomCreateBackground">#121212</color>
+
+    <color name="iconTint">#FFFFFF</color>
+
+    <color name="bottomBarColor">#212121</color>
+    <color name="navigationColor">@color/bottomBarColor</color>
+    <bool name="navigationIconLight">false</bool>
+
     <color name="breadcrumbArrowTint">#FFFFFF</color>
-    <color name="breadcrumbContainerColor">#000000</color>
-    <color name="breadcrumbItemBackgroundColor">#000000</color>
+    <color name="breadcrumbContainerColor">#212121</color>
+    <color name="breadcrumbItemBackgroundColor">#212121</color>
     <color name="breadcrumbTextColor">#FFFFFF</color>
 </resources>

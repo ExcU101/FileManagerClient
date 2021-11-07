@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.FileManageClient" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/iconTint</item>
+        <item name="android:colorControlNormal">@color/iconTint</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="titleTextColor">@color/black</item>
+        <item name="backgroundColor">#EEEEEE</item>
+        <item name="cornerFamily">rounded</item>
+        <item name="android:navigationBarColor">@color/navigationColor</item>
+        <item name="android:windowLightNavigationBar">@bool/navigationIconLight</item>
+    </style>
+</resources>

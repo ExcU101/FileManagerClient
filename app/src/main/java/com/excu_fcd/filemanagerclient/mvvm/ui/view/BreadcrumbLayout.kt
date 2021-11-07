@@ -1,7 +1,6 @@
 package com.excu_fcd.filemanagerclient.mvvm.ui.view
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -13,11 +12,9 @@ import androidx.core.view.isVisible
 import com.excu_fcd.core.data.model.DocumentModel
 import com.excu_fcd.filemanagerclient.R
 import com.excu_fcd.filemanagerclient.databinding.BreadcrumbItemBinding
+import com.excu_fcd.filemanagerclient.mvvm.data.Action
 import com.excu_fcd.filemanagerclient.mvvm.data.BreadcrumbItem
-import com.excu_fcd.filemanagerclient.mvvm.utils.atMost
-import com.excu_fcd.filemanagerclient.mvvm.utils.dp
-import com.excu_fcd.filemanagerclient.mvvm.utils.layoutInflater
-import com.excu_fcd.filemanagerclient.mvvm.utils.unspecified
+import com.excu_fcd.filemanagerclient.mvvm.utils.*
 
 class BreadcrumbLayout : HorizontalScrollView {
 
@@ -30,8 +27,10 @@ class BreadcrumbLayout : HorizontalScrollView {
 
     private var isShowed = true
 
-    private val backgroundItem = ContextCompat.getDrawable(context,
-        R.drawable.breadcrumb_item_foreground)
+    private val backgroundItem = ContextCompat.getDrawable(
+        context,
+        R.drawable.breadcrumb_item_foreground
+    )
 
     private var isLayoutDirty = false
     private var isScrollToSelectedItemPending = false
@@ -116,6 +115,8 @@ class BreadcrumbLayout : HorizontalScrollView {
         scrollToSelected()
     }
 
+    fun getItem() = _item
+
     private fun inflate() {
         _item?.let {
             for (i in it.models.size until items.childCount) {
@@ -136,11 +137,33 @@ class BreadcrumbLayout : HorizontalScrollView {
                 binding.text.text = models[i].getName()
                 binding.arrow.isVisible = i != models.lastIndex
                 binding.root.isActivated = selected == i
-                binding.text.setTextColor(ContextCompat.getColor(context,
-                    if (selected == i) R.color.breadcrumbSelectedTextColor else R.color.breadcrumbTextColor))
+                binding.text.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        if (selected == i) R.color.breadcrumbSelectedTextColor else R.color.breadcrumbTextColor
+                    )
+                )
 //                if (it.selected == i) {
 //                    binding.text.setBackgroundColor(resources.getColor(R.color.ripple))
 //                }
+
+                binding.root.setOnLongClickListener { view ->
+                    binding.text.popup(
+                        items = listOf(
+                            Action("Copy", R.drawable.ic_copy_24)
+                        )
+                    ) {
+                        return@popup when (it.title) {
+                            "Copy" -> {
+                                _listener?.copyPath()
+                                true
+                            }
+                            else -> false
+                        }
+                    }.show()
+                    return@setOnLongClickListener true
+                }
+
                 binding.root.setOnClickListener { _ ->
                     if (selected == i) {
                         scrollToSelected()
@@ -158,5 +181,6 @@ class BreadcrumbLayout : HorizontalScrollView {
 
     interface Listener {
         fun navigateTo(model: DocumentModel)
+        fun copyPath()
     }
 }

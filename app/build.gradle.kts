@@ -34,14 +34,18 @@ android {
         debug {
             isMinifyEnabled = false
             isShrinkResources = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -92,10 +96,15 @@ dependencies {
     implementation("androidx.datastore:datastore:$dataVersion")
     implementation("androidx.datastore:datastore-preferences:$dataVersion")
 
-    implementation("androidx.core:core-ktx:1.6.0")
+    // AndroidX
+    val fragmentVersion = "1.3.6"
+    implementation("androidx.core:core-ktx:1.7.0")
+    implementation("androidx.transition:transition-ktx:1.4.1")
+    implementation("androidx.fragment:fragment-ktx:$fragmentVersion")
     implementation("androidx.appcompat:appcompat:1.3.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation("com.google.android.material:material:1.5.0-alpha04")
+
+    implementation("com.google.android.material:material:1.5.0-alpha05")
 
 
 //    testImplementation "junit:junit:4.13.2"

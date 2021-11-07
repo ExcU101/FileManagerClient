@@ -7,12 +7,14 @@ import com.excu_fcd.core.data.model.DocumentModel
 import com.excu_fcd.core.data.request.Request
 import com.excu_fcd.core.provider.DocumentManager
 import com.excu_fcd.core.provider.DocumentManager.Companion.CURRENT_PATH_STATE
-import com.excu_fcd.core.provider.job.Job
+import com.excu_fcd.core.provider.job.callback.ModelJobCallback
+import com.excu_fcd.core.provider.job.callback.OperationJobCallback
 import com.excu_fcd.filemanagerclient.mvvm.utils.getStateFlow
-import com.excu_fcd.filemanagerclient.mvvm.utils.logIt
 import com.excu_fcd.filemanagerclient.mvvm.viewmodel.state.ListState
 import com.excu_fcd.filemanagerclient.mvvm.viewmodel.state.ViewModelState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -29,16 +31,39 @@ class DocumentViewModel @Inject constructor(
     val currentPathFlow
         get() = _currentPath.asStateFlow()
 
-
     private val _state = MutableStateFlow(ViewModelState.empty())
     val stateFlow
         get() = _state.asStateFlow()
 
+    private val _refresh = MutableStateFlow(false)
+    val refreshFlow
+        get() = _refresh.asStateFlow()
+
+    private val _loading = MutableStateFlow(false)
+    val loadingFlow
+        get() = _loading.asStateFlow()
+
     init {
         viewModelScope.launch {
-            _currentPath.apply {
-                launchState(value)
-            }
+            loadState(_currentPath.value)
+        }
+    }
+
+    fun refreshState() {
+        viewModelScope.launch {
+            _refresh.emit(value = true)
+            delay(timeMillis = 500L)
+            launchState(path = _currentPath.value)
+            _refresh.emit(value = false)
+        }
+    }
+
+    fun loadState(path: DocumentModel = _currentPath.value) {
+        viewModelScope.launch {
+            _loading.emit(value = true)
+            delay(timeMillis = 500L)
+            launchState(path = path)
+            _loading.emit(value = false)
         }
     }
 
@@ -50,8 +75,8 @@ class DocumentViewModel @Inject constructor(
 
     suspend fun request(
         request: Request,
-        operationCallback: Job.OperationCallback? = null,
-        operationItemCallback: Job.ItemOperationCallback? = null,
+        operationCallback: OperationJobCallback? = null,
+        operationItemCallback: ModelJobCallback? = null,
     ) {
         manager.pullRequest(request, operationCallback, operationItemCallback)
     }
@@ -59,10 +84,15 @@ class DocumentViewModel @Inject constructor(
     private suspend fun launchState(path: DocumentModel = _currentPath.value) {
         _currentPath.emit(path)
         val list = manager.getListFromPath(path)
-        list.forEach {
-            it.getName().logIt()
-        }
-        _state.emit(ListState(list.sortedBy { it.getName() }))
+
+        _state.emit(ListState(list.sortedWith(compareBy {
+            it
+        })))
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelScope.cancel()
     }
 
 }

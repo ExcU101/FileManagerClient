@@ -20,7 +20,7 @@ class FileManagerPagerFragment : Fragment(R.layout.filemanager_pager_fragment) {
         with(binding) {
             adapter.setFragments(
                 list {
-                    repeat(1) {
+                    repeat(3) {
                         item(FileManagerFragment())
                     }
                 }

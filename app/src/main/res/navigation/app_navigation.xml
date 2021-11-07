@@ -11,43 +11,26 @@
         tools:layout="@layout/filemanager_pager_fragment" />
 
     <fragment
-        android:id="@+id/fileManagerCreateFragment"
-        android:name="com.excu_fcd.filemanagerclient.mvvm.ui.fragment.FileManagerCreateFragment"
-        android:label="filemanager_create_fragment"
-        tools:layout="@layout/filemanager_create_fragment">
-        <action
-            android:id="@+id/action_fileManagerCreateFragment_to_fileManagerFragment"
-            app:destination="@id/fileManagerFragment">
-
-        </action>
-        <argument
-            android:name="currentPath"
-            app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null" />
-
-    </fragment>
-    <fragment
         android:id="@+id/fileManagerFragment"
         android:name="com.excu_fcd.filemanagerclient.mvvm.ui.fragment.FileManagerFragment"
         android:label="filemanager_fragment"
         tools:layout="@layout/filemanager_fragment">
         <action
             android:id="@+id/action_fileManagerFragment_to_fileManagerCreateFragment"
-            app:destination="@id/fileManagerCreateFragment">
-
-            <argument
-                android:name="currentPath"
-                app:argType="string"
-                app:nullable="true"
-                android:defaultValue="&quot;&quot;"/>
-
-        </action>
-
+            app:destination="@id/fileManagerCreateFragment" />
     </fragment>
 
     <action
         android:id="@+id/action_filemanager_fragment"
         app:destination="@id/fileManagerFragment" />
+    <fragment
+        android:id="@+id/fileManagerCreateFragment"
+        android:name="com.excu_fcd.filemanagerclient.mvvm.ui.fragment.FileManagerCreateFragment"
+        android:label="filemanager_create_fragment"
+        tools:layout="@layout/filemanager_create_fragment">
+        <action
+            android:id="@+id/action_fileManagerCreateFragment_to_fileManagerFragment"
+            app:destination="@id/fileManagerFragment" />
+    </fragment>
 
 </navigation>
