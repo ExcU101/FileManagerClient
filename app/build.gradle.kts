@@ -22,7 +22,7 @@ android {
         minSdk = 21
         targetSdk = 31
         versionCode = 1
-        versionName = "1.0"
+        versionName = "3.1.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -64,8 +64,9 @@ android {
 
 dependencies {
     implementation(project(mapOf("path" to ":core")))
+    implementation(project(mapOf("path" to ":plugin")))
     // Lifecycle
-    val lifecycleVersion = "2.4.0-rc01"
+    val lifecycleVersion = "2.4.0"
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
@@ -79,22 +80,19 @@ dependencies {
     kapt("androidx.room:room-compiler:$roomVersion")
 
     // Hilt
-    val hiltVersion = "2.39.1"
+    val hiltVersion = "2.40.1"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
-    implementation("androidx.hilt:hilt-work:1.0.0")
     implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
-    kapt("androidx.hilt:hilt-compiler:1.0.0")
+
+    // Work manager
+    val workVersion = "2.7.0"
+    implementation("androidx.work:work-runtime-ktx:$workVersion")
 
     // Navigation
     val navVersion = "2.3.5"
     implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
-
-    // Data store
-    val dataVersion = "1.0.0"
-    implementation("androidx.datastore:datastore:$dataVersion")
-    implementation("androidx.datastore:datastore-preferences:$dataVersion")
 
     // AndroidX
     val fragmentVersion = "1.3.6"
@@ -105,9 +103,4 @@ dependencies {
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     implementation("com.google.android.material:material:1.5.0-alpha05")
-
-
-//    testImplementation "junit:junit:4.13.2"
-//    androidTestImplementation "androidx.test.ext:junit:1.1.3"
-//    androidTestImplementation "androidx.test.espresso:espresso-core:3.4.0"
 }

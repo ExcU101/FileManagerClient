@@ -8,10 +8,14 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.excu_fcd.core.extensions.FragmentBindingInitInterface
 import com.excu_fcd.filemanagerclient.R
 import com.excu_fcd.filemanagerclient.databinding.NavigationLayoutBinding
-import com.excu_fcd.filemanagerclient.mvvm.utils.*
+import com.excu_fcd.filemanagerclient.mvvm.utils.hide
+import com.excu_fcd.filemanagerclient.mvvm.utils.isExpanded
+import com.excu_fcd.filemanagerclient.mvvm.utils.show
+import com.excu_fcd.filemanagerclient.mvvm.utils.topShapeModel
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
@@ -81,13 +85,16 @@ class NavigationFragment : Fragment(), FragmentBindingInitInterface<NavigationLa
         binding?.run {
 
             navigation.setNavigationItemSelectedListener {
-                navigation.setCheckedItem(it.itemId)
-                when (it.itemId) {
-                    R.id.fileManager -> {
+                when (it.title) {
+                    "File Manager" -> {
+                        behavior?.hide()
+                        findNavController().navigate(R.id.fileManagerFragment)
                         true
                     }
 
-                    R.id.taskManager -> {
+                    "Task Manager" -> {
+                        behavior?.hide()
+                        findNavController().navigate(R.id.taskManagerFragment)
                         true
                     }
 
@@ -116,17 +123,18 @@ class NavigationFragment : Fragment(), FragmentBindingInitInterface<NavigationLa
                         }
 
                         STATE_HIDDEN -> {
-                            mFab?.show()
                             requireActivity().findViewById<BottomAppBar>(R.id.bar)
                                 .replaceMenu(R.menu.bar_menu)
+                            if (findNavController().currentDestination?.id != R.id.taskManagerFragment) {
+                                mFab?.show()
+                            }
                             scrim.visibility = GONE
                         }
-
                     }
                 }
 
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    scrim.alpha = (slideOffset + 1f) / 2F
+                    scrim.alpha = (slideOffset + 1) / 2
                 }
             })
         }

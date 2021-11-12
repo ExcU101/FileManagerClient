@@ -1,25 +1,51 @@
 package com.excu_fcd.core.data.model
 
-import android.os.Environment
 import android.os.Parcelable
 import androidx.documentfile.provider.DocumentFile
 import com.excu_fcd.core.extensions.asDocumentModel
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
-import kotlinx.parcelize.RawValue
+import kotlinx.parcelize.WriteWith
+import javax.inject.Inject
 
 @Parcelize
-class DocumentModel(
-    private val file: @RawValue DocumentFile = DocumentFile.fromFile(
-        Environment.getExternalStoragePublicDirectory(
-            ""
-        )
-    ),
+class DocumentModel @Inject constructor(
+    private val file: @WriteWith<ParceledFile> DocumentFile,
     private val isMustBeDirectory: Boolean = false,
 ) : Parcelable, Comparable<DocumentModel> {
+
     override fun compareTo(other: DocumentModel): Int {
         return getName().length - other.getName().length
     }
+
+    fun getSize(): String {
+        var length = file.length()
+        var index = 0
+
+        if (length <= 8) {
+            return "$length Bit"
+        }
+
+        while (length > 1024) {
+            length /= 1024
+            index++
+        }
+
+        return "$length ${
+            when (index) {
+                8 -> "YB"
+                7 -> "ZB"
+                6 -> "EB"
+                5 -> "PB"
+                4 -> "TB"
+                3 -> "GB"
+                2 -> "MB"
+                1 -> "KB"
+                else -> "B"
+            }
+        }"
+    }
+
+    fun toUri() = file.uri
 
     fun exists(): Boolean = file.exists()
 
@@ -57,7 +83,6 @@ class DocumentModel(
         return delete(file)
     }
 
-    @IgnoredOnParcel
     private val uri = file.uri
 
     fun getScheme(): String? = uri.scheme

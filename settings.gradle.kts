@@ -8,7 +8,7 @@ pluginManagement {
         eachPlugin {
             val kotlinVersion = "1.5.31"
             val androidVersion = "7.0.3"
-            val hiltVersion = "2.38.1"
+            val hiltVersion = "2.40.1"
 
             if (requested.id.id.startsWith("org.jetbrains.kotlin")) {
                 useVersion(kotlinVersion)
@@ -27,3 +27,4 @@ pluginManagement {
 }
 rootProject.name = "File Manager Client"
 include(":app", ":core")
+include(":plugin")

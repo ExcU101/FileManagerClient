@@ -7,7 +7,6 @@ import com.excu_fcd.core.data.model.DocumentModel
 import com.excu_fcd.core.data.request.operation.Operation
 import com.excu_fcd.core.data.request.operation.type.CreateType
 import com.excu_fcd.core.data.request.operation.type.DeleteType
-import com.excu_fcd.core.extensions.getConcatenatedMimeType
 import com.excu_fcd.filemanagerclient.R
 import com.excu_fcd.filemanagerclient.mvvm.ui.adapter.listener.OnViewClickListener
 import com.excu_fcd.filemanagerclient.mvvm.ui.adapter.viewholder.LocalViewHolder
@@ -33,16 +32,25 @@ class DocumentAdapter : AbsAdapter<DocumentModel, LocalViewHolder>(localDiffer()
 
     override fun onBindViewHolder(holder: LocalViewHolder, position: Int) {
         val item = currentList[position]
+        val type = item.getMimeType()
+        val length = item.getSize()
         with(holder.binding) {
-
-
             itemRoot.setOnClickListener { view ->
                 listener?.onClick(item = item, view = view)
             }
 
+            mimeType.text = if (item.isDirectory()) {
+                if (type == "Empty folder") {
+                    mimeType.context.getString(R.string.item_empty_folder)
+                } else {
+                    mimeType.context.getString(R.string.item_items_folder, type)
+                }
+            } else {
+                mimeType.context.getString(R.string.item_type_file, type)
+            }
+
+            size.text = size.context.getString(R.string.item_size, length)
             title.text = item.getName()
-            mimeType.text = item.getConcatenatedMimeType()
-//            size.text = "Size: ${item.fromLength()}"
             icon.setImageResource(if (item.isDirectory()) R.drawable.ic_folder_24 else R.drawable.ic_file_24)
             more.setOnClickListener { view ->
                 listener?.onClick(item = item, view = view)

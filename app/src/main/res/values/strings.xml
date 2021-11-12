@@ -3,6 +3,27 @@
     <string name="dialog_create_now">Now</string>
     <string name="dialog_create_plan">Plan</string>
 
+    <string name="action_dismiss">Dismiss</string>
+    <string name="action_cancel">Cancel</string>
+
+    <!--Create Menu primary-->
+    <string name="primary_text_name">Primary</string>
+    <string name="enter_name_text">Enter name</string>
+    <string name="enter_path_text">Enter path</string>
+    <string name="enter_file_type_text">Enter file type</string>
+
+    <!--Create Menu secondary-->
+    <string name="secondary_text_name">Secondary</string>
+    <string name="enter_files_count_text">Enter files count</string>
+    <string name="develop_text_name">Develop</string>
+
+    <!--Item MimeTypes-->
+    <!--WARNING: Do not touch tag "%1$"-->
+    <string name="item_empty_folder">Empty folder</string>
+    <string name="item_items_folder">Items: %1$s</string>
+    <string name="item_type_file">Type: %1$s</string>
+    <string name="item_size">Size: %1$s</string>
+
     <string-array name="file_types">
         <item>File</item>
         <item>Directory</item>

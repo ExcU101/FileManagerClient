@@ -3,14 +3,18 @@ package com.excu_fcd.filemanagerclient.mvvm.ui.fragment
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
 import androidx.fragment.app.setFragmentResultListener
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
@@ -41,17 +45,21 @@ import com.excu_fcd.filemanagerclient.mvvm.viewmodel.DocumentViewModel
 import com.excu_fcd.filemanagerclient.mvvm.viewmodel.state.ListState
 import com.excu_fcd.filemanagerclient.mvvm.viewmodel.state.ScreenState
 import com.excu_fcd.filemanagerclient.mvvm.viewmodel.state.ViewModelState
+import com.excu_fcd.plugin.PluginFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import kotlin.LazyThreadSafetyMode.*
+
 
 @AndroidEntryPoint
 class FileManagerFragment :
-    Fragment(R.layout.filemanager_fragment),
+    PluginFragment(),
     OnViewClickListener<DocumentModel>,
     BreadcrumbLayout.Listener, FragmentResultListener,
     FragmentBindingInitInterface<FilemanagerFragmentBinding> {
@@ -63,6 +71,10 @@ class FileManagerFragment :
         listener = this@FileManagerFragment
     }
 
+    private val fab by lazy(NONE) {
+        requireActivity().findViewById<FloatingActionButton>(R.id.fab)
+    }
+
     private val operationsBinding by lazy {
         OperationsLayoutBinding.inflate(layoutInflater)
     }
@@ -72,6 +84,18 @@ class FileManagerFragment :
             setContentView(operationsBinding.root)
         }
     }
+
+    private val register: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            result.data?.data?.let {
+                grantUri(
+                    it,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
+                it.asDocumentTreeModel(requireContext())
+                    ?.let { file -> viewModel.loadState(path = file) }
+            }
+        }
 
 
     private val ioScope = CoroutineScope(IO)
@@ -148,6 +172,13 @@ class FileManagerFragment :
             }
         }
 
+        findNavController().getLiveData<List<DocumentModel>>("CREATE_ARRAY")
+            ?.observe(viewLifecycleOwner) {
+                ioScope.launch {
+                    subscribeRequest(request = createRequest(it.logEachName().toList()))
+                }
+            }
+
         binding?.run {
             progress.hide()
 
@@ -197,21 +228,45 @@ class FileManagerFragment :
         viewModel.updateState(path = model)
     }
 
-    override fun copyPath() {
+    override fun copyPath(model: DocumentModel) {
         val board = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         board.setPrimaryClip(
             ClipData.newPlainText(
                 "Path",
-                viewModel.currentPathFlow.value.getPath()
+                model.getPath()
             )
         )
+        "Copied!".anchoredSnackIt(fab)
+    }
+
+    override fun copyShortInfo(model: DocumentModel) {
+        val board = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        board.setPrimaryClip(
+            ClipData.newPlainText(
+                "Short info ${model.getName()}",
+                "Name: ${model.getName()} \nPath: ${model.getPath()} \nSize: ${model.getSize()}"
+            )
+        )
+        "Copied!".anchoredSnackIt(fab)
     }
 
     override fun onClick(item: DocumentModel, view: View) {
         when (view) {
             is LinearLayoutCompat -> {
                 if (item.isDirectory()) {
+                    if (isAndroidR()) {
+                        if (item.getName() == "data") {
+                            register.launch(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+                                putExtra(
+                                    DocumentsContract.EXTRA_INITIAL_URI,
+                                    Uri.parse("content://com.android.externalstorage.documents/document/primary%3AAndroid%2Fdata%2F")
+                                )
+                            })
+                        }
+                    }
                     navigateTo(item)
+                } else {
+
                 }
             }
             is AppCompatImageButton -> {
@@ -267,7 +322,7 @@ class FileManagerFragment :
                 reason: Reason,
             ) {
                 if (reason is TextualReason) {
-
+                    reason.text.anchoredSnackIt(requireActivity().findViewById(R.id.fab))
                 }
             }
 
@@ -285,7 +340,7 @@ class FileManagerFragment :
                 reason: Reason,
             ) {
                 if (reason is TextualReason) {
-
+                    reason.text.anchoredSnackIt(requireActivity().findViewById(R.id.fab))
                 }
                 reason.logIt()
             }

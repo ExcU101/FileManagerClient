@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <color name="colorAccent">#6200EE</color>
+    <color name="backgroundColor">#EEEEEE</color>
 
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
     <color name="breadcrumbRippleColor">#4D6200EE</color>
     <color name="breadcrumbSelectedTextColor">#6200EE</color>
 
-    <color name="bottomCreateBackground">#FFFFFF</color>
-
     <color name="iconTint">#000000</color>
-    
+
     <color name="fabColor">#6200EE</color>
     <color name="fabIconColor">#FFFFFF</color>
+
+    <color name="bottomCreateBackground">#FFFFFF</color>
 
     <color name="bottomBarColor">#FFFFFF</color>
     <color name="navigationColor">@color/bottomBarColor</color>

@@ -150,14 +150,21 @@ class BreadcrumbLayout : HorizontalScrollView {
                 binding.root.setOnLongClickListener { view ->
                     binding.text.popup(
                         items = listOf(
-                            Action("Copy", R.drawable.ic_copy_24)
+                            Action("Copy path", R.drawable.ic_copy_24),
+                            Action("Copy short info", R.drawable.ic_copy_24)
                         )
                     ) {
                         return@popup when (it.title) {
                             "Copy" -> {
-                                _listener?.copyPath()
+                                _listener?.copyPath(models[i])
                                 true
                             }
+
+                            "Copy short info" -> {
+                                _listener?.copyShortInfo(models[i])
+                                true
+                            }
+
                             else -> false
                         }
                     }.show()
@@ -181,6 +188,7 @@ class BreadcrumbLayout : HorizontalScrollView {
 
     interface Listener {
         fun navigateTo(model: DocumentModel)
-        fun copyPath()
+        fun copyPath(model: DocumentModel)
+        fun copyShortInfo(model: DocumentModel)
     }
 }

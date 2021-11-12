@@ -30,6 +30,7 @@
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/drawable/ic_settings_24.xml" value="0.38177083333333334" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout-v23/item_model_layout.xml" value="0.34923076923076923" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/banner_layout.xml" value="0.2558876811594203" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/breadcrumb_item.xml" value="0.3546875" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/create_now_fragment.xml" value="0.22" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/dialog_create_layout.xml" value="0.24537037037037038" />
@@ -44,6 +45,8 @@
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/navigation_drawer.xml" value="0.3536458333333333" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/navigation_layout.xml" value="0.3596014492753623" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/operations_layout.xml" value="0.3446557971014493" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/task_fragment.xml" value="0.35190217391304346" />
+        <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/layout/task_item.xml" value="0.35190217391304346" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/menu/bar_menu.xml" value="0.21296296296296297" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/menu/create_menu.xml" value="0.365625" />
         <entry key="..\:/Users/Igor/AndroidStudioProjects/FileManagerClient/app/src/main/res/menu/default_operations.xml" value="0.365625" />

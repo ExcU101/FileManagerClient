@@ -16,6 +16,7 @@ import com.excu_fcd.filemanagerclient.mvvm.ui.fragment.FileManagerFragment
 import com.excu_fcd.filemanagerclient.mvvm.ui.fragment.NavigationFragment
 import com.excu_fcd.filemanagerclient.mvvm.utils.*
 import com.google.android.material.bottomappbar.BottomAppBar
+import com.google.android.material.bottomappbar.BottomAppBar.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.google.android.material.transition.MaterialSharedAxis
 import com.google.android.material.transition.MaterialSharedAxis.Y
@@ -41,8 +42,11 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        binding?.run {
-            setContentView(root)
+        if (savedInstanceState == null) {
+            binding?.run {
+                setContentView(root)
+                setupBar(R.menu.bar_menu)
+            }
         }
     }
 
@@ -58,14 +62,12 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             bar.navigationIcon = icon
             controller.addOnDestinationChangedListener(this@MainActivity)
 
-            setupBar(R.menu.bar_menu)
-            bar.performHide()
-
             bar.setNavigationOnClickListener {
-                if (currentFragment is FileManagerFragment) {
+                if (currentFragment is FileManagerCreateFragment) {
+                    controller.popBackStack(R.id.fileManagerFragment, false)
+                } else {
                     navigationFragment.toggle()
                 }
-                controller.popBackStack(R.id.fileManagerFragment, false)
             }
 
             bar.setOnMenuItemClickListener {
@@ -114,16 +116,28 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         destination: NavDestination,
         arguments: Bundle?
     ) {
-        when (destination.logIt().id) {
+        when (destination.id) {
+
+            R.id.action_fileManagerFragment_to_taskFragment -> {
+                binding?.bar?.menu?.clear()
+            }
+
             R.id.fileManagerFragment -> {
                 setupBar(
                     id = R.menu.bar_menu,
                     iconRes = R.drawable.ic_menu_24,
-                    mode = BottomAppBar.FAB_ALIGNMENT_MODE_CENTER,
+                    mode = FAB_ALIGNMENT_MODE_CENTER,
                     fabIcon = R.drawable.ic_add_24
                 )
                 binding?.bar?.performShow()
                 binding?.fab?.show()
+            }
+
+            R.id.taskManagerFragment -> {
+                binding?.bar?.menu?.clear()
+                setupBar(
+                    id = null,
+                )
             }
 
             R.id.fileManagerCreateFragment -> {
@@ -131,7 +145,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                 setupBar(
                     id = null,
                     iconRes = R.drawable.ic_close_24,
-                    mode = BottomAppBar.FAB_ALIGNMENT_MODE_END,
+                    mode = FAB_ALIGNMENT_MODE_END,
                     fabIcon = R.drawable.ic_done_24
                 )
             }
@@ -140,7 +154,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                 setupBar(
                     id = R.menu.bar_menu,
                     iconRes = R.drawable.ic_menu_24,
-                    mode = BottomAppBar.FAB_ALIGNMENT_MODE_CENTER
+                    mode = FAB_ALIGNMENT_MODE_CENTER
                 )
             }
         }
@@ -173,7 +187,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     private fun setupBar(
         @MenuRes id: Int? = null,
         @DrawableRes iconRes: Int? = null,
-        mode: Int? = null,
+        @FabAlignmentMode mode: Int? = null,
         @DrawableRes fabIcon: Int? = null
     ) {
         iconRes?.let { binding?.bar?.setNavigationIcon(it) }

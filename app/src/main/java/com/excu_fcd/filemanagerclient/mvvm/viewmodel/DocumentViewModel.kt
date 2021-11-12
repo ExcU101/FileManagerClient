@@ -1,5 +1,7 @@
 package com.excu_fcd.filemanagerclient.mvvm.viewmodel
 
+import android.os.Environment
+import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,7 +29,11 @@ class DocumentViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _currentPath =
-        state.getStateFlow(viewModelScope, initialValue = DocumentModel(), key = CURRENT_PATH_STATE)
+        state.getStateFlow(
+            viewModelScope,
+            initialValue = DocumentModel(DocumentFile.fromFile(Environment.getExternalStorageDirectory())),
+            key = CURRENT_PATH_STATE
+        )
     val currentPathFlow
         get() = _currentPath.asStateFlow()
 
@@ -83,11 +89,13 @@ class DocumentViewModel @Inject constructor(
 
     private suspend fun launchState(path: DocumentModel = _currentPath.value) {
         _currentPath.emit(path)
-        val list = manager.getListFromPath(path)
 
-        _state.emit(ListState(list.sortedWith(compareBy {
-            it
-        })))
+        try {
+            val list = manager.getListFromPath(path)
+            _state.emit(ListState(list.sorted()))
+        } catch (e: IllegalArgumentException) {
+            e.stackTrace
+        }
     }
 
     override fun onCleared() {

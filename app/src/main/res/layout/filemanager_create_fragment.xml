@@ -20,90 +20,147 @@
             android:layout_marginBottom="120dp"
             android:orientation="vertical">
 
-            <TextView
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:text="Primary"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+                android:orientation="vertical">
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:hint="Enter name"
-                android:outlineAmbientShadowColor="#FFFFFF"
-                app:boxStrokeColor="@color/colorAccent"
-                app:endIconMode="clear_text"
-                app:hintTextColor="@color/colorAccent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:hint="Enter path"
-                app:boxStrokeColor="@color/colorAccent"
-                app:hintTextColor="@color/colorAccent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/path"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:hint="Enter file type">
-
-                <AutoCompleteTextView
-                    android:id="@+id/fileType"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none" />
+                    android:layout_margin="16dp"
+                    android:text="@string/primary_text_name"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
 
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:text="Secondary"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/inputExtension"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:hint="Enter extension"
-                app:boxStrokeColor="@color/colorAccent"
-                app:endIconMode="clear_text"
-                app:endIconTint="@color/iconTint"
-                app:helperTextTextColor="#304FFE"
-                app:hintTextColor="@color/colorAccent"
-                app:startIconDrawable="@drawable/ic_extension_24"
-                app:startIconTint="@color/iconTint">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/extension"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:hint="@string/enter_name_text"
+                    app:boxStrokeColor="@color/colorAccent"
+                    app:endIconMode="clear_text"
+                    app:hintTextColor="@color/colorAccent">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:hint="@string/enter_path_text"
+                    app:boxStrokeColor="@color/colorAccent"
+                    app:hintTextColor="@color/colorAccent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/path"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:hint="@string/enter_file_type_text">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/fileType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:text="@string/secondary_text_name"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/inputExtension"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:hint="Enter extension"
+                    app:boxStrokeColor="@color/colorAccent"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/iconTint"
+                    app:helperTextTextColor="#304FFE"
+                    app:hintTextColor="@color/colorAccent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/extension"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/develop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:text="@string/develop_text_name"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:hint="@string/enter_files_count_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/filesCount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:hint="Enter saf type"
+                    app:helperText="For SAF!">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/safType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

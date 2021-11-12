@@ -18,6 +18,9 @@
         <action
             android:id="@+id/action_fileManagerFragment_to_fileManagerCreateFragment"
             app:destination="@id/fileManagerCreateFragment" />
+        <action
+            android:id="@+id/action_fileManagerFragment_to_taskFragment"
+            app:destination="@id/taskManagerFragment" />
     </fragment>
 
     <action
@@ -32,5 +35,9 @@
             android:id="@+id/action_fileManagerCreateFragment_to_fileManagerFragment"
             app:destination="@id/fileManagerFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/taskManagerFragment"
+        android:name="com.excu_fcd.filemanagerclient.mvvm.ui.fragment.TaskManagerFragment"
+        android:label="TaskFragment" />
 
 </navigation>

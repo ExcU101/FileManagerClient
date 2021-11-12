@@ -44,6 +44,15 @@ internal const val createNewLocalFile: String = "createNewLocalFile"
 fun <T> NavController.getLiveData(key: String) =
     currentBackStackEntry?.savedStateHandle?.getLiveData<T>(key)
 
+fun <T> NavController.getLiveDataPrev(key: String) =
+    previousBackStackEntry?.savedStateHandle?.getLiveData<T>(key)
+
+fun <T> NavController.setPrev(key: String, value: T) =
+    previousBackStackEntry?.savedStateHandle?.set(key, value)
+
+fun <T> NavController.getPrev(key: String) =
+    previousBackStackEntry?.savedStateHandle?.get<T>(key)
+
 fun <T> NavController.set(key: String, value: T) =
     currentBackStackEntry?.savedStateHandle?.set(key, value)
 

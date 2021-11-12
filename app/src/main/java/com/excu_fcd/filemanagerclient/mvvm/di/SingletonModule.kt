@@ -1,6 +1,10 @@
 package com.excu_fcd.filemanagerclient.mvvm.di
 
 import android.content.Context
+import android.net.Uri
+import androidx.documentfile.provider.DocumentFile
+import com.excu_fcd.core.data.model.DocumentModel
+import com.excu_fcd.core.extensions.asDocumentModel
 import com.excu_fcd.core.provider.DocumentManager
 import dagger.Module
 import dagger.Provides
@@ -12,17 +16,9 @@ import javax.inject.Singleton
 @Module(includes = [])
 @InstallIn(SingletonComponent::class)
 object SingletonModule {
-
-//    @Provides
-//    @Singleton
-//    fun provideDataBase(@ApplicationContext context: Context): AbstractBase {
-//        return Room.databaseBuilder(context, AbstractBase::class.java, "").build()
-//    }
-
-
     @Provides
     @Singleton
     fun provideDocumentManager(@ApplicationContext context: Context): DocumentManager =
-        DocumentManager(context = context)
+        DocumentManager(context)
 }
 
